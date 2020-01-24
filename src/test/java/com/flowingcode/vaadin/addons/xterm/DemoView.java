@@ -18,14 +18,18 @@
  * #L%
  */
 
-package com.flowingcode.addons.xterm;
+package com.flowingcode.vaadin.addons.xterm;
 
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
-import com.flowingcode.addons.xterm.ITerminalOptions.CursorStyle;
-import com.flowingcode.addons.xterm.XTermClipboard.UseSystemClipboard;
+import com.flowingcode.vaadin.addons.xterm.XTerm;
+import com.flowingcode.vaadin.addons.xterm.XTermClipboard;
+import com.flowingcode.vaadin.addons.xterm.XTermConsole;
+import com.flowingcode.vaadin.addons.xterm.XTermFit;
+import com.flowingcode.vaadin.addons.xterm.ITerminalOptions.CursorStyle;
+import com.flowingcode.vaadin.addons.xterm.XTermClipboard.UseSystemClipboard;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;

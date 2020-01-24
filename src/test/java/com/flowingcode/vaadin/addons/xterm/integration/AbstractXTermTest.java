@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package com.flowingcode.addons.xterm.integration;
+package com.flowingcode.vaadin.addons.xterm.integration;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -27,7 +27,7 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-import com.flowingcode.addons.xterm.XTermFeature;
+import com.flowingcode.vaadin.addons.xterm.XTermFeature;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.testbench.TestBenchElement;
 

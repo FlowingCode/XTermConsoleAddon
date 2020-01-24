@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package com.flowingcode.addons.xterm;
+package com.flowingcode.vaadin.addons.xterm;
 
 import java.util.stream.Stream;
 

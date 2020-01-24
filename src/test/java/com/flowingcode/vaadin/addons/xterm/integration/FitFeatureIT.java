@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package com.flowingcode.addons.xterm.integration;
+package com.flowingcode.vaadin.addons.xterm.integration;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -25,7 +25,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.openqa.selenium.Dimension;
 
-import com.flowingcode.addons.xterm.XTermFit;
+import com.flowingcode.vaadin.addons.xterm.XTermFit;
 import com.vaadin.testbench.TestBenchElement;
 
 public class FitFeatureIT extends AbstractXTermTest {

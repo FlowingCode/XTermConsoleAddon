@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package com.flowingcode.addons.xterm.integration;
+package com.flowingcode.vaadin.addons.xterm.integration;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package com.flowingcode.addons.xterm.integration;
+package com.flowingcode.vaadin.addons.xterm.integration;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isEmptyString;
@@ -29,7 +29,7 @@ import org.junit.Test;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 
-import com.flowingcode.addons.xterm.XTermConsole;
+import com.flowingcode.vaadin.addons.xterm.XTermConsole;
 import com.vaadin.testbench.TestBenchElement;
 
 public class ConsoleFeatureIT extends AbstractXTermTest {

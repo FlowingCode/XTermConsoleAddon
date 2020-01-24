@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package com.flowingcode.addons.xterm.integration;
+package com.flowingcode.vaadin.addons.xterm.integration;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -25,7 +25,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.openqa.selenium.interactions.Actions;
 
-import com.flowingcode.addons.xterm.XTermClipboard;
+import com.flowingcode.vaadin.addons.xterm.XTermClipboard;
 import com.vaadin.testbench.TestBenchElement;
 
 public class ClipboardFeatureIT extends AbstractXTermTest {

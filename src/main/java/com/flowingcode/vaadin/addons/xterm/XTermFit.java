@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package com.flowingcode.addons.xterm;
+package com.flowingcode.vaadin.addons.xterm;
 
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.dependency.JsModule;
