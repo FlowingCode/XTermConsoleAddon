@@ -97,7 +97,7 @@ export class XTerm extends PolymerElement {
 		});
 		
 		//https://gist.github.com/xem/670dec8e70815842eb95
-		term.setOption('bellSound','data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU'+Array(2e5).join(123));
+		term.setOption('bellSound','data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU'+Array(500).join(123));
 	 		 	
 	 	this._loadFeature('insertFix', new InsertFixFeature());
 	}
