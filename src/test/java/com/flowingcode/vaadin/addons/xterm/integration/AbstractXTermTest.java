@@ -46,7 +46,7 @@ public abstract class AbstractXTermTest extends AbstractViewTest {
 			WebElement element = term.findElement(By.xpath(String.format("./%s[@slot='feature']", elementName)));		
 			getCommandExecutor().executeScript("arguments[0].test=42", element);
 			Object test = getCommandExecutor().executeScript("return arguments[0].features[arguments[1]].test", term, featureName);
-			assertEquals("Property and element differ", test, 42L);
+			assertEquals("Property and element differ", 42L, test);
 		}
 	};
 

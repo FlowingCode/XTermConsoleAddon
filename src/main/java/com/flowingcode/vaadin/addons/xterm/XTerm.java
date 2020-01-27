@@ -115,7 +115,7 @@ public class XTerm extends Component implements ITerminal, ITerminalOptions, Has
 					if (method.getDeclaringClass()==Object.class) {
 						return method.invoke(this, args);
 					} else if (name.startsWith("set") && args.length==1) {
-						name = name.substring(3);
+						name = name.substring("set".length());
 						name = name.substring(0,1).toLowerCase(Locale.ENGLISH)+name.substring(1);
 						Serializable arg;
 						if (args[0] instanceof Enum) {

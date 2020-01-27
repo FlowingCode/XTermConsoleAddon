@@ -73,17 +73,17 @@ public class XTermClipboard extends XTermFeature {
 	}
 	
 	/**Return whether mouse right click is handled as a paste action*/
-	public boolean getPasteWithRightClick() {
+	public boolean isPasteWithRightClick() {
 		return getElement().getProperty("pasteWithRightClick", false);
 	}
 	
 	/**Return whether mouse middle click is handled as a paste action*/
-	public boolean getPasteWithMiddleClick(boolean value) {
+	public boolean isPasteWithMiddleClick() {
 		return getElement().getProperty("pasteWithMiddleClick", false);
 	}
 	
 	/**Return whether text is copied to the clipboard when selected.*/
-	public boolean getCopySelection(boolean value) {
+	public boolean isCopySelection() {
 		return getElement().getProperty("copySelection", false);
 	}
 

@@ -19,12 +19,13 @@
  */
 package com.flowingcode.vaadin.addons.xterm;
 
+import java.io.Serializable;
 import java.util.concurrent.CompletableFuture;
 
 /**
  * The API that represents an xterm.js terminal.
  */
-public interface ITerminal {
+public interface ITerminal extends Serializable {
 
 	/**
      * Unfocus the terminal.

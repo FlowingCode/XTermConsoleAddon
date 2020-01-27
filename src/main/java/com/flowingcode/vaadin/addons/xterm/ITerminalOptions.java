@@ -19,8 +19,10 @@
  */
 package com.flowingcode.vaadin.addons.xterm;
 
+import java.io.Serializable;
+
 /**Start up options for the terminal.*/
-public interface ITerminalOptions {
+public interface ITerminalOptions extends Serializable {
 
 	/**
 	  * A data uri of the sound to use for the bell when `bellStyle = 'sound'`.
