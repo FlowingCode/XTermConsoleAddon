@@ -26,10 +26,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
-import com.flowingcode.vaadin.addons.xterm.XTerm;
-import com.flowingcode.vaadin.addons.xterm.XTermClipboard;
-import com.flowingcode.vaadin.addons.xterm.XTermConsole;
-import com.flowingcode.vaadin.addons.xterm.XTermFit;
+import com.flowingcode.vaadin.addons.xterm.ITerminalOptions.BellStyle;
 import com.flowingcode.vaadin.addons.xterm.ITerminalOptions.CursorStyle;
 import com.flowingcode.vaadin.addons.xterm.XTermClipboard.UseSystemClipboard;
 import com.vaadin.flow.component.notification.Notification;
@@ -50,10 +47,10 @@ public class DemoView extends VerticalLayout {
 		
 		xterm = new XTerm();
 		xterm.writeln("xterm add-on by Flowing Code S.A.\n\n");
-		xterm.writeln("If you write \"time\" I'll tell you what time it is, "+
-		              "if you write \"date\" I'll tell you what date it is.\n");
+		xterm.writeln("Commands: time, date, beep\n");
 		xterm.setCursorBlink(true);
 		xterm.setCursorStyle(CursorStyle.UNDERLINE);
+		xterm.setBellStyle(BellStyle.SOUND);
     	
 		xterm.setSizeFull();
 		xterm.loadFeature(new XTermClipboard(), clipboard->{
@@ -64,13 +61,18 @@ public class DemoView extends VerticalLayout {
 		});
 		xterm.loadFeature(new XTermConsole(), console->{
 			console.addLineListener(ev->{
-				String line = ev.getLine();
-				if (line.equalsIgnoreCase("time")) {
+				switch (ev.getLine().toLowerCase()) {
+				case "time": 
 					xterm.writeln(LocalTime.now().truncatedTo(ChronoUnit.SECONDS).format(DateTimeFormatter.ISO_TIME));
-				} else if (line.equalsIgnoreCase("date")) {
+					break;
+				case "date":
 					xterm.writeln(LocalDate.now().toString());
+					break;
+				case "beep":
+					xterm.write("\u0007");
+					break;
 				}
-				Notification.show(line);
+				Notification.show(ev.getLine());
 			});
 		});
 		
