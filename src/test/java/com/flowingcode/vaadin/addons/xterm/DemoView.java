@@ -21,8 +21,10 @@
 package com.flowingcode.vaadin.addons.xterm;
 
 
-import java.time.ZonedDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 import com.flowingcode.vaadin.addons.xterm.XTerm;
 import com.flowingcode.vaadin.addons.xterm.XTermClipboard;
@@ -36,17 +38,20 @@ import com.vaadin.flow.router.Route;
 
 @SuppressWarnings("serial")
 @Route("")
-//@CssImport("./styles/shared-styles.css")
 public class DemoView extends VerticalLayout {
 
 	private XTerm xterm;
 	
 	public DemoView() {
 		this.setSizeFull();
+		setPadding(false);
+		getElement().getStyle().set("background", "black");
+		
 		
 		xterm = new XTerm();
 		xterm.writeln("xterm add-on by Flowing Code S.A.\n\n");
-		xterm.writeln("If you write \"time\" I'll tell you what time it is.\n");
+		xterm.writeln("If you write \"time\" I'll tell you what time it is, "+
+		              "if you write \"date\" I'll tell you what date it is.\n");
 		xterm.setCursorBlink(true);
 		xterm.setCursorStyle(CursorStyle.UNDERLINE);
     	
@@ -61,7 +66,9 @@ public class DemoView extends VerticalLayout {
 			console.addLineListener(ev->{
 				String line = ev.getLine();
 				if (line.equalsIgnoreCase("time")) {
-					xterm.writeln(ZonedDateTime.now().format(DateTimeFormatter.RFC_1123_DATE_TIME));
+					xterm.writeln(LocalTime.now().truncatedTo(ChronoUnit.SECONDS).format(DateTimeFormatter.ISO_TIME));
+				} else if (line.equalsIgnoreCase("date")) {
+					xterm.writeln(LocalDate.now().toString());
 				}
 				Notification.show(line);
 			});
