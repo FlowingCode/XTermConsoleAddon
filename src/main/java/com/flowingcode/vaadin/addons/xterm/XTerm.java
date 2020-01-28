@@ -74,6 +74,75 @@ public class XTerm extends Component implements ITerminal, ITerminalOptions, Has
 	@Delegate
 	private ITerminal terminalProxy;
 	
+	private class ProxyInvocationHandler implements InvocationHandler, Serializable {
+
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+			if (method.getDeclaringClass()==Object.class) {
+				return method.invoke(this, args);
+			} 
+			
+			Function<JsonValue, Object> mapping = getResultTypeMapper(method);
+			
+			String name = method.getName();
+			PendingJavaScriptResult result = invoke(name, args);
+			
+			if (mapping!=null) { 
+				return result.toCompletableFuture().thenApply(json -> (json instanceof JsonNull) ? null : mapping.apply(json));
+			} else {
+				return null;
+			}
+		}
+
+		private Function<JsonValue, Object> getResultTypeMapper(Method method) {
+			if (method.getReturnType()==Void.TYPE) {
+				return null;
+			} else if (method.getReturnType()==CompletableFuture.class) {
+				ParameterizedType type = (ParameterizedType) method.getGenericReturnType();
+				Class<?> resultType = (Class<?>) type.getActualTypeArguments()[0];
+				
+				if (resultType == Void.class) {
+					return x->null;
+				} else if (resultType == String.class) {
+					return JsonValue::asString;
+				} else if (resultType == Boolean.class) {
+					return JsonValue::asBoolean;
+				} else if (resultType == Integer.class) {
+					return json -> (int) json.asNumber();
+				} else {
+					throw new AbstractMethodError(method.toString());
+				}
+			} else {
+				throw new AbstractMethodError(method.toString());
+			}
+		}
+		
+		private PendingJavaScriptResult invoke(String name, Object[] args) {
+			if (name.startsWith("set") && args.length==1) {
+				name = name.substring("set".length());
+				name = name.substring(0,1).toLowerCase(Locale.ENGLISH)+name.substring(1);
+				Serializable arg;
+				if (args[0] instanceof Enum) {
+					arg = ((Enum<?>)args[0]).name().toLowerCase(Locale.ENGLISH);
+				} else {
+					arg = (Serializable)args[0];
+				}
+				return getElement().executeJs("this.terminal.setOption($0,$1)", name, arg);
+			} else if (args == null || args.length == 0) {
+				return getElement().executeJs("this.terminal[$0]()", name);
+			} else if (args.length == 1) {
+				return getElement().executeJs("this.terminal[$0]($1)", name, (Serializable) args[0]);
+			} else {
+				Serializable[] sargs = new Serializable[args.length];
+				System.arraycopy(args, 0, sargs, 0, args.length);
+				String expr = IntStream.rangeClosed(1,  args.length).mapToObj(i->"$"+i).collect(Collectors.joining(","));
+				return getElement().executeJs("this.terminal[$0]("+expr+")", name, sargs);
+			}
+		}
+	}
+	
 	private static final Class<?> optionsProxyClass;
 		
 	static {
@@ -84,65 +153,7 @@ public class XTerm extends Component implements ITerminal, ITerminalOptions, Has
 	public XTerm() {
 		//initialize delegate proxies
 		try {
-			Object proxy = optionsProxyClass.getConstructor(InvocationHandler.class).newInstance(new InvocationHandler() {				
-				@Override
-				public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-					
-					Function<JsonValue, Object> mapping;
-					if (method.getReturnType()==Void.TYPE) {
-						mapping = null;
-					} else if (method.getReturnType()==CompletableFuture.class) {
-						ParameterizedType type = (ParameterizedType) method.getGenericReturnType();
-						Class<?> resultType = (Class<?>) type.getActualTypeArguments()[0];
-						
-						if (resultType == Void.class) {
-							mapping = x->null;
-						} else if (resultType == String.class) {
-							mapping = JsonValue::asString;
-						} else if (resultType == Boolean.class) {
-							mapping = JsonValue::asBoolean;
-						} else if (resultType == Integer.class) {
-							mapping = json -> (int) json.asNumber();
-						} else {
-							throw new AbstractMethodError(method.toString());
-						}
-					} else {
-						throw new AbstractMethodError(method.toString());
-					}
-					
-					String name = method.getName();
-					PendingJavaScriptResult result;
-					if (method.getDeclaringClass()==Object.class) {
-						return method.invoke(this, args);
-					} else if (name.startsWith("set") && args.length==1) {
-						name = name.substring("set".length());
-						name = name.substring(0,1).toLowerCase(Locale.ENGLISH)+name.substring(1);
-						Serializable arg;
-						if (args[0] instanceof Enum) {
-							arg = ((Enum<?>)args[0]).name().toLowerCase(Locale.ENGLISH);
-						} else {
-							arg = (Serializable)args[0];
-						}
-						result = getElement().executeJs("this.terminal.setOption($0,$1)", name, arg);
-					} else if (args == null || args.length == 0) {
-						result = getElement().executeJs("this.terminal[$0]()", name);
-					} else if (args.length == 1) {
-						result = getElement().executeJs("this.terminal[$0]($1)", name, (Serializable) args[0]);
-					} else {
-						Serializable[] sargs = new Serializable[args.length];
-						System.arraycopy(args, 0, sargs, 0, args.length);
-						String expr = IntStream.rangeClosed(1,  args.length).mapToObj(i->"$"+i).collect(Collectors.joining(","));
-						result = getElement().executeJs("this.terminal[$0]("+expr+")", name, sargs);
-					}
-					
-					if (mapping!=null) { 
-						return result.toCompletableFuture().thenApply(json -> (json instanceof JsonNull) ? null : mapping.apply(json));
-					} else {
-						return null;
-					}
-				}
-			});
-			
+			Object proxy = optionsProxyClass.getConstructor(InvocationHandler.class).newInstance(new ProxyInvocationHandler());
 			this.terminalProxy = (ITerminal) proxy;
 			this.terminalOptionsProxy = (ITerminalOptions) proxy;
 		} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
@@ -158,7 +169,7 @@ public class XTerm extends Component implements ITerminal, ITerminalOptions, Has
 		
 		loadFeature(new XTermFit());
 	}
-	
+
 	/**Install a pluggable feature in the terminal*/
 	public void loadFeature(XTermFeature feature) {
 		getElement().appendChild(feature.getElement());
