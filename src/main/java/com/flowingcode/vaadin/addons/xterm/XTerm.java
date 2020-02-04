@@ -126,6 +126,8 @@ public class XTerm extends Component implements ITerminal, ITerminalOptions, Has
 				Serializable arg;
 				if (args[0] instanceof Enum) {
 					arg = ((Enum<?>)args[0]).name().toLowerCase(Locale.ENGLISH);
+				} else if (args[0] instanceof TerminalTheme){
+					arg = ((TerminalTheme)args[0]).asJsonObject();
 				} else {
 					arg = (Serializable)args[0];
 				}

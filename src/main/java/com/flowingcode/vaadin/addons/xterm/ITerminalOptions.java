@@ -135,6 +135,9 @@ public interface ITerminalOptions extends Serializable {
      */
     void setMinimumContrastRatio(int value);
 
+    /**The color theme of the terminal.*/
+    void setTheme(TerminalTheme theme);
+    
     /**
      * The type of renderer to use, this allows using the fallback DOM renderer
      * when canvas is too slow for the environment. The following features do

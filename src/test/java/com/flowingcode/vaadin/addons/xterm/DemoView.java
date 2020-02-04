@@ -47,11 +47,11 @@ public class DemoView extends VerticalLayout {
 		
 		xterm = new XTerm();
 		xterm.writeln("xterm add-on by Flowing Code S.A.\n\n");
-		xterm.writeln("Commands: time, date, beep\n");
+		xterm.writeln("Commands: time, date, beep, color on, color off\n");
 		xterm.setCursorBlink(true);
 		xterm.setCursorStyle(CursorStyle.UNDERLINE);
 		xterm.setBellStyle(BellStyle.SOUND);
-    	
+		
 		xterm.setSizeFull();
 		xterm.loadFeature(new XTermClipboard(), clipboard->{
 			clipboard.setCopySelection(true);
@@ -71,8 +71,18 @@ public class DemoView extends VerticalLayout {
 				case "beep":
 					xterm.write("\u0007");
 					break;
+				case "color on":
+					xterm.setTheme(new TerminalTheme()
+							.withBackground("rgb(103,195,228)")
+							.withForeground("rgb(0,0,0)"));
+					break;
+				case "color off":
+					xterm.setTheme(new TerminalTheme());
+					break;
+				default:
+					xterm.writeln("Bad command");
+					Notification.show(ev.getLine());
 				}
-				Notification.show(ev.getLine());
 			});
 		});
 		
