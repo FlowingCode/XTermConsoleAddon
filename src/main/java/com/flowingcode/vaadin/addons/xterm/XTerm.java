@@ -207,7 +207,7 @@ public class XTerm extends Component implements ITerminal, ITerminalOptions, Has
 		JsonArray array = Json.createArray();
 		for (String key : keys) {
 			JsonObject json = Json.createObject();
-			json.put("key", key);
+			json.put("code", key);
 			if (location != null) {
 				json.put("location", location.getLocation());
 			}
@@ -220,18 +220,18 @@ public class XTerm extends Component implements ITerminal, ITerminalOptions, Has
 		
 		StringBuilder sb = new StringBuilder("");
 		sb.append(IntStream.range(0, array.length())
-		  .mapToObj(i -> array.getObject(i).getString("key"))
+		  .mapToObj(i -> array.getObject(i).getString("code"))
 		  .map(s->String.format("'%s'", s))
 		  .collect(Collectors.joining(",", "[", "]")))
-		  .append(".includes(event.key)");
+		  .append(".includes(event.detail.code)");
 		
 		JsonObject json = array.getObject(0);
 		if (location != null) {
-			sb.append(" && event.location=").append(json.getNumber("location"));
+			sb.append(" && event.detail.location=").append(json.getNumber("location"));
 		}
 		
 		for (String modifier: Arrays.asList("ctrlKey", "altKey", "metaKey", "shiftKey")) {
-			sb.append(json.getBoolean(modifier) ? "&& " : "&& !").append("event.").append(modifier);
+			sb.append(json.getBoolean(modifier) ? "&& " : "&& !").append("event.detail.").append(modifier);
 		}
 		
 		String filter = sb.toString();

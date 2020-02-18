@@ -80,7 +80,7 @@ export class XTerm extends PolymerElement {
 			
 			//(C) T.J. Crowder  cc-by-sa 4.0
 			//https://stackoverflow.com/a/35430956/1297272
-			let properties = ['key', 'location', 'ctrlKey', 'altKey', 'metaKey', 'shiftKey'];
+			let properties = ['key', 'code', 'location', 'ctrlKey', 'altKey', 'metaKey', 'shiftKey'];
 			if (this.customKeys.find(customKey => properties.every(property => customKey[property] === ev[property] || customKey[property]===undefined))) {
 				this.dispatchEvent(new CustomEvent('CustomKey', {detail: ev}));
 			} else if (ev.key==' ') {
