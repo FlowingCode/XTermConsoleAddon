@@ -4,7 +4,7 @@
 
     <groupId>com.flowingcode.addons</groupId>
     <artifactId>xterm-console</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>XTerm Console Addon</name>
     <description>Integration of xterm.js for Vaadin Flow</description>
 
@@ -33,9 +33,9 @@
     </licenses>
 	
 	<scm>
-        <url>https://github.com/FlowingCode/XTermConsoleAddon</url>
-        <connection>scm:git:git://github.com/FlowingCode/XTermConsoleAddon.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com:/FlowingCode/XTermConsoleAddon.git</developerConnection>
+        <url>https://github.com/FlowingCode/XTermAddon</url>
+        <connection>scm:git:git://github.com/FlowingCode/XTermAddon.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com:/FlowingCode/XTermAddon.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 	
@@ -66,13 +66,6 @@
 			<version>1.18.10</version>
 		</dependency>
 		
-		<dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <scope>provided</scope>
-            <version>4.0.1</version>
-        </dependency>
-        
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-core</artifactId>
@@ -158,9 +151,6 @@
 				<configuration>
 				  <licenseName>apache_v2</licenseName>
 				  <addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
-				  <excludes>
-					<exclude>**/xterm.css</exclude>
-				  </excludes>
 				</configuration>
 			</plugin>
 	
@@ -204,6 +194,12 @@
                             the test package. -->
                     <useTestScope>true</useTestScope>
                     <webAppConfig>
+                    <!-- 
+                        <resourceBases>
+	                        <resourceBase>src/test/resources/META-INF/resources</resourceBase>
+	                        <resourceBase>src/main/resources/META-INF/resources</resourceBase>
+	                    </resourceBases>
+	                 -->
                     </webAppConfig>
                     <supportedPackagings>
                         <supportedPackaging>jar</supportedPackaging>

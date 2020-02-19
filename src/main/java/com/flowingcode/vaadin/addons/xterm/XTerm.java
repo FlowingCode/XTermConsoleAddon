@@ -63,7 +63,7 @@ import lombok.experimental.Delegate;
 @NpmPackage(value = "xterm", version = "^4.3.0")
 @JsModule("./fc-xterm/xterm.js")
 @Tag("fc-xterm")
-@CssImport("./fc-xterm/xterm.css")
+@CssImport("xterm/css/xterm.css")
 public class XTerm extends Component implements ITerminal, ITerminalOptions, HasSize, HasEnabled {
 
 	private static final long serialVersionUID = 1L;
