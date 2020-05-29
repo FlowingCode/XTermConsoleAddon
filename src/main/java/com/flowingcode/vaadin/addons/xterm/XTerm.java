@@ -60,7 +60,7 @@ import elemental.json.JsonValue;
 import lombok.experimental.Delegate;
 
 /** Server-side component for the XTerm component. */
-@NpmPackage(value = "xterm", version = "^4.3.0")
+@NpmPackage(value = "xterm", version = "4.3.0")
 @JsModule("./fc-xterm/xterm.js")
 @Tag("fc-xterm")
 @CssImport("xterm/css/xterm.css")
