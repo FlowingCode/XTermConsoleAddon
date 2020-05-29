@@ -33,9 +33,9 @@
     </licenses>
 	
 	<scm>
-        <url>https://github.com/FlowingCode/XTermAddon</url>
-        <connection>scm:git:git://github.com/FlowingCode/XTermAddon.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com:/FlowingCode/XTermAddon.git</developerConnection>
+        <url>https://github.com/FlowingCode/XTermConsoleAddon</url>
+        <connection>scm:git:git://github.com/FlowingCode/XTermConsoleAddon.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com:/FlowingCode/XTermConsoleAddon.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 	
