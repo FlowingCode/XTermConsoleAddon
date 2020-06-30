@@ -59,7 +59,7 @@ export class XTerm extends PolymerElement {
 		this.__customKeyEventHandlers = [];
 		this.__customKeyEventHandlers.next = 0;
 		
-		term.addCustomKeyEventHandler = (predicate, handler) => {
+		term.registerCustomKeyEventHandler = (predicate, handler) => {
 			let id = ++this.__customKeyEventHandlers.next;
 			if (!handler) handler= ()=>false;
 			this.__customKeyEventHandlers[id] = {predicate, handler};

@@ -25,7 +25,7 @@ export class InsertFixFeature {
 		
 		let printHandler = term._core._inputHandler._parser._printHandler;
 		term._core._inputHandler._parser.setPrintHandler((function(data, start, end) {
-			if (this._terminal.insertMode && this._terminal.wraparoundMode && !this._optionsService.options.windowsMode) {
+			if (this._terminal.insertMode && this._terminal._coreService.decPrivateModes.wraparound && !this._optionsService.options.windowsMode) {
 				const buffer = this._bufferService.buffer;
 				const bufferRow = buffer.lines.get(buffer.y + buffer.ybase);
 				
@@ -56,7 +56,7 @@ export class InsertFixFeature {
 					for (let y=range.last;y>range.first;y--) {
 						let dst = src;
 						src= buffer.lines.get(y-1);
-						dst.insertCells(0, printedLength, this._terminal.buffer.getNullCell(this._terminal.eraseAttrData()));
+						dst.insertCells(0, printedLength, this._terminal.buffer.getNullCell());
 						dst.copyCellsFrom(src, buffer._cols-printedLength, 0, printedLength);
 						this._dirtyRowService.markDirty(y);
 					}

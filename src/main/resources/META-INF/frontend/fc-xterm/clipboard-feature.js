@@ -81,8 +81,8 @@ export class ClipboardFeature extends PolymerElement {
 		this._disposables = [
 		
 		//ctrl-C ctrl-V
-		term.addCustomKeyEventHandler(ev=> ev.key=='c' && ev.ctrlKey, null),
-		term.addCustomKeyEventHandler(ev=> ev.key=='v' && ev.ctrlKey, null),
+		term.registerCustomKeyEventHandler(ev=> ev.key=='c' && ev.ctrlKey, null),
+		term.registerCustomKeyEventHandler(ev=> ev.key=='v' && ev.ctrlKey, null),
 		
 		//copy selection
 		terminal.onSelectionChange(() => {

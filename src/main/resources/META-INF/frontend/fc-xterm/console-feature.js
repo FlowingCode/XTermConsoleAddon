@@ -136,25 +136,25 @@ export class LineEditorFeature extends PolymerElement {
 		
 		this._disposables = [
 		
-		terminal.parser.addCsiHandler({prefix: '<', final: 'H'}, cursorHome),	
-		terminal.addCustomKeyEventHandler(ev=> ev.key=='Home', ()=> terminal.write('\x1b[<H')),
+		terminal.parser.registerCsiHandler({prefix: '<', final: 'H'}, cursorHome),	
+		terminal.registerCustomKeyEventHandler(ev=> ev.key=='Home', ()=> terminal.write('\x1b[<H')),
 		
-		terminal.parser.addCsiHandler({prefix: '<', final: 'E'}, cursorEnd),
-		terminal.addCustomKeyEventHandler(ev=> ev.key=='End', ()=> terminal.write('\x1b[<E')),
+		terminal.parser.registerCsiHandler({prefix: '<', final: 'E'}, cursorEnd),
+		terminal.registerCustomKeyEventHandler(ev=> ev.key=='End', ()=> terminal.write('\x1b[<E')),
 		
-		terminal.parser.addCsiHandler({prefix: '<', final: 'L'}, cursorBackwardWrapped),
-		terminal.addCustomKeyEventHandler(ev=> ev.key=='ArrowLeft', ()=> terminal.write('\x1b[<L')),
+		terminal.parser.registerCsiHandler({prefix: '<', final: 'L'}, cursorBackwardWrapped),
+		terminal.registerCustomKeyEventHandler(ev=> ev.key=='ArrowLeft', ()=> terminal.write('\x1b[<L')),
 		
-		terminal.parser.addCsiHandler({prefix: '<', final: 'R'}, cursorForwardWrapped),
-		terminal.addCustomKeyEventHandler(ev=> ev.key=='ArrowRight', ()=> terminal.write('\x1b[<R')),
+		terminal.parser.registerCsiHandler({prefix: '<', final: 'R'}, cursorForwardWrapped),
+		terminal.registerCustomKeyEventHandler(ev=> ev.key=='ArrowRight', ()=> terminal.write('\x1b[<R')),
 		
-		terminal.parser.addCsiHandler({prefix: '<', final: 'B'}, backspace),
-		terminal.addCustomKeyEventHandler(ev=> ev.key=='Backspace', ()=> terminal.write('\x1b[<B')),
+		terminal.parser.registerCsiHandler({prefix: '<', final: 'B'}, backspace),
+		terminal.registerCustomKeyEventHandler(ev=> ev.key=='Backspace', ()=> terminal.write('\x1b[<B')),
 		
-		terminal.parser.addCsiHandler({prefix: '<', final: 'D'}, deleteChar),
-		terminal.addCustomKeyEventHandler(ev=> ev.key=='Delete', ()=> terminal.write('\x1b[<D')),
+		terminal.parser.registerCsiHandler({prefix: '<', final: 'D'}, deleteChar),
+		terminal.registerCustomKeyEventHandler(ev=> ev.key=='Delete', ()=> terminal.write('\x1b[<D')),
 		
-		terminal.addCustomKeyEventHandler(ev=> ev.key=='Insert', ev=>{
+		terminal.registerCustomKeyEventHandler(ev=> ev.key=='Insert', ev=>{
 			let ins = terminal._core._inputHandler._terminal.insertMode;
 			console.log("INS");
 			if (ins) {
@@ -164,27 +164,27 @@ export class LineEditorFeature extends PolymerElement {
 			}
 		}),
 		
-		terminal.addCustomKeyEventHandler(ev=> ev.key=='Enter', ev=>{
+		terminal.registerCustomKeyEventHandler(ev=> ev.key=='Enter', ev=>{
 			terminal.write('\x1b[<N\n');
 		}),
 		
-		terminal.addCustomKeyEventHandler(ev=> [
+		terminal.registerCustomKeyEventHandler(ev=> [
 			'ArrowUp',
 			'ArrowDown',
 			'F1', 'F2', 'F3', 'F4', 'F7', 'F8', 'F9', 'F10', 'F11',
 		].includes(ev.key), ev=>ev.preventDefault() && false),
 		
-		terminal.addCustomKeyEventHandler(ev=> [
+		terminal.registerCustomKeyEventHandler(ev=> [
 			'Escape'
 		].includes(ev.key), () => this.escapeEnabled),
 		
-		terminal.addCustomKeyEventHandler(ev=> [
+		terminal.registerCustomKeyEventHandler(ev=> [
 			'F5',
 			'F6',
 			'F12'
 		].includes(ev.key), null),
 		
-		terminal.parser.addCsiHandler({prefix: '<', final: 'N'}, linefeed)
+		terminal.parser.registerCsiHandler({prefix: '<', final: 'N'}, linefeed)
 
 		];
 	}
