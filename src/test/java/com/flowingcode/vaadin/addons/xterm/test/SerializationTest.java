@@ -14,16 +14,16 @@ import com.flowingcode.vaadin.addons.xterm.XTermConsole;
 import com.flowingcode.vaadin.addons.xterm.XTermFit;
 
 public class SerializationTest {
-	
+
 	private void testSerializationOf(Object obj) throws IOException, ClassNotFoundException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		
+
 		try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
-			oos.writeObject(new XTerm());
+			oos.writeObject(obj);
 		}
-		
+
 		try (ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()))) {
-			XTerm.class.cast(in.readObject());
+			obj.getClass().cast(in.readObject());
 		}
 	}
 
