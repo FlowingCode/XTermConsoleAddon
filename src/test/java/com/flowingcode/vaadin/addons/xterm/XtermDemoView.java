@@ -20,6 +20,7 @@
 package com.flowingcode.vaadin.addons.xterm;
 
 import com.flowingcode.vaadin.addons.DemoLayout;
+import com.flowingcode.vaadin.addons.GithubLink;
 import com.flowingcode.vaadin.addons.xterm.ITerminalOptions.BellStyle;
 import com.flowingcode.vaadin.addons.xterm.ITerminalOptions.CursorStyle;
 import com.flowingcode.vaadin.addons.xterm.XTermClipboard.UseSystemClipboard;
@@ -33,6 +34,7 @@ import java.time.temporal.ChronoUnit;
 
 @SuppressWarnings("serial")
 @Route(value = "xterm", layout = DemoLayout.class)
+@GithubLink("https://github.com/FlowingCode/XTermConsoleAddon")
 public class XtermDemoView extends VerticalLayout {
 
 	private XTerm xterm;
