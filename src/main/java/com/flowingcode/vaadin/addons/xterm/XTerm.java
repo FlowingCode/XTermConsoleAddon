@@ -58,7 +58,7 @@ import java.util.stream.IntStream;
 import lombok.experimental.Delegate;
 
 /** Server-side component for the XTerm component. */
-@NpmPackage(value = "xterm", version = "4.4.0")
+@NpmPackage(value = "xterm", version = "4.11.0")
 @JsModule("./fc-xterm/xterm.js")
 @Tag("fc-xterm")
 @CssImport("xterm/css/xterm.css")
