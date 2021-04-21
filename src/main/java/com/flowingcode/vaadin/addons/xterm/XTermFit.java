@@ -23,23 +23,22 @@ import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dependency.NpmPackage;
 
-/**Enables fitting the terminal's dimensions to a containing component*/
+/** Enables fitting the terminal's dimensions to a containing component */
 @NpmPackage(value = "xterm-addon-fit", version = "0.3.0")
 @JsModule("./fc-xterm/fit-feature.js")
 @Tag("fc-xterm-fit")
 @SuppressWarnings("serial")
 public class XTermFit extends XTermFeature {
 
-	public void fit() {
-		getElement().executeJs("this._fitAddon.fit()");
-	}
+  public void fit() {
+    getElement().executeJs("this._fitAddon.fit()");
+  }
 
-	public void setFitOnResize(boolean value) {
-		getElement().setProperty("fitOnResize", value);
-	}
+  public void setFitOnResize(boolean value) {
+    getElement().setProperty("fitOnResize", value);
+  }
 
-	public boolean isFitOnResize() {
-		return getElement().getProperty("fitOnResize", false);
-	}
-
+  public boolean isFitOnResize() {
+    return getElement().getProperty("fitOnResize", false);
+  }
 }

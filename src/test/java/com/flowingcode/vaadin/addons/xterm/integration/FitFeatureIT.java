@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,30 +22,28 @@ package com.flowingcode.vaadin.addons.xterm.integration;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import com.flowingcode.vaadin.addons.xterm.XTermFit;
+import com.vaadin.testbench.TestBenchElement;
 import org.junit.Test;
 import org.openqa.selenium.Dimension;
 
-import com.flowingcode.vaadin.addons.xterm.XTermFit;
-import com.vaadin.testbench.TestBenchElement;
-
 public class FitFeatureIT extends AbstractXTermTest {
-   
-	@Test 
-	public void testFeature() {
-		TestBenchElement term = $("fc-xterm").first();
-		assertFeatureHasBeenLoaded(term, XTermFit.class, "fit");
-		
-		int colsBefore = getColumnWidth(term);
-		Dimension dimension = getDriver().manage().window().getSize();
-		
-		getDriver().manage().window().setSize(new Dimension(dimension.width/2, dimension.height));
-		int colsAfter = getColumnWidth(term);
 
-		assertTrue(colsAfter*2<=colsBefore);
+  @Test
+  public void testFeature() {
+    TestBenchElement term = $("fc-xterm").first();
+    assertFeatureHasBeenLoaded(term, XTermFit.class, "fit");
 
-		getDriver().manage().window().setSize(dimension);
-		int colsRestored = getColumnWidth(term);
-		assertEquals(colsBefore,colsRestored);
-	}
+    int colsBefore = getColumnWidth(term);
+    Dimension dimension = getDriver().manage().window().getSize();
 
+    getDriver().manage().window().setSize(new Dimension(dimension.width / 2, dimension.height));
+    int colsAfter = getColumnWidth(term);
+
+    assertTrue(colsAfter * 2 <= colsBefore);
+
+    getDriver().manage().window().setSize(dimension);
+    int colsRestored = getColumnWidth(term);
+    assertEquals(colsBefore, colsRestored);
+  }
 }
