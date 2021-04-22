@@ -19,15 +19,8 @@
  */
 package com.flowingcode.vaadin.addons.xterm.integration;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import com.flowingcode.vaadin.addons.xterm.XTermFeature;
-import com.vaadin.flow.component.Tag;
 import com.vaadin.testbench.TestBenchElement;
 import java.util.List;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 
 public abstract class AbstractXTermTest extends AbstractViewTest {
 
@@ -35,26 +28,6 @@ public abstract class AbstractXTermTest extends AbstractViewTest {
     return ((Long) getCommandExecutor().executeScript("return arguments[0].terminal.cols", term))
         .intValue();
   }
-
-  final void assertFeatureHasBeenLoaded(
-      TestBenchElement term, Class<? extends XTermFeature> featureClass, String featureName) {
-    Object property =
-        getCommandExecutor()
-            .executeScript("return arguments[0].features[arguments[1]]", term, featureName);
-    assertNotNull("No property for feature " + featureName, property);
-
-    if (featureClass != null) {
-      String elementName = featureClass.getAnnotation(Tag.class).value();
-      WebElement element =
-          term.findElement(By.xpath(String.format("./%s[@slot='feature']", elementName)));
-      getCommandExecutor().executeScript("arguments[0].test=42", element);
-      Object test =
-          getCommandExecutor()
-              .executeScript("return arguments[0].features[arguments[1]].test", term, featureName);
-      assertEquals("Property and element differ", 42L, test);
-    }
-  }
-  ;
 
   final String currentLine(TestBenchElement terminal) {
     return lineAtOffset(terminal, 0);
