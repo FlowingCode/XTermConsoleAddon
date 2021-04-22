@@ -17,38 +17,34 @@
  * limitations under the License.
  * #L%
  */
-import {PolymerElement} from '@polymer/polymer/polymer-element.js';
+import { Terminal } from 'xterm'
+import { TerminalMixin, TerminalAddon } from '@vaadin/flow-frontend/fc-xterm/xterm-element';
 
-export class LineEditorFeature extends PolymerElement {
+interface IConsoleMixin extends TerminalMixin {
+	escapeEnabled: Boolean;
+}
 
-	static get is() { return 'fc-xterm-line-editor'; }
+class ConsoleAddon extends TerminalAddon<IConsoleMixin> {
 	
-	static get properties() {
-		return {
-			escapeEnabled: {
-				type: Boolean,
-				value: false
-			}
-		};
-	}
-	
-	activate(terminal) {
-
-		const self = this;
+	activateCallback(terminal: Terminal): void {
+		//const self = this;
 		
-		let cursorPosition = (function(row,col) {
-			this.cursorPosition({params:[row, col]});
-		}).bind(terminal._core._inputHandler);
-
+		/*
+		const this.$node = this.this.$node;
+		const terminal = this.this.$node.terminal;
+		*/
+		
+		var inputHandler = ((this.$core) as any)._inputHandler;
+		
 		let scanEOL = (function() {
 			let buffer = this._bufferService.buffer;
 			let col = this._bufferService.buffer.lines.get(buffer.ybase+buffer.y).getTrimmedLength();
 			this.cursorCharAbsolute({params:[col+1]});
-		}).bind(terminal._core._inputHandler);
+		}).bind(inputHandler);
 		
 		let cursorForwardWrapped = (function() {
 			let buffer = this._bufferService.buffer;
-			if (buffer.x==this._terminal.cols-1) {
+			if (buffer.x==this._bufferService.cols-1) {
 				let next = buffer.lines.get(buffer.y+buffer.ybase+1);
 				if (next && next.isWrapped) {
 					this.cursorNextLine({params:1});
@@ -56,7 +52,7 @@ export class LineEditorFeature extends PolymerElement {
 			} else if (buffer.x<this._bufferService.buffer.lines.get(buffer.y+buffer.ybase).getTrimmedLength()) {
 				this.cursorForward({params:[1]});
 			}
-		}).bind(terminal._core._inputHandler);
+		}).bind(inputHandler);
 			
 		let cursorBackwardWrapped = (function() {
 			let buffer = this._bufferService.buffer;
@@ -70,7 +66,7 @@ export class LineEditorFeature extends PolymerElement {
 			} else {
 				return false;
 			}
-		}).bind(terminal._core._inputHandler);
+		}).bind(inputHandler);
 		
 		let deleteChar = (function() {
 			let buffer = this._bufferService.buffer;
@@ -90,19 +86,19 @@ export class LineEditorFeature extends PolymerElement {
 				line.isWrapped=false;
 				if (y==range.last) {
 					y--;
-					x=this._terminal.cols-1;
+					x=this._bufferService.cols-1;
 				}
 			}
 			buffer.y=y;
 			buffer.x=x;
-		}).bind(terminal._core._inputHandler);
+		}).bind(inputHandler);
 
 		let cursorEnd = (function() {
 			let buffer = this._bufferService.buffer;
 			let y, range = buffer.getWrappedRangeForLine(y = buffer.y + buffer.ybase);
 			if (range.last!=y) this.cursorNextLine({params:[range.last-y]});
 			scanEOL();
-		}).bind(terminal._core._inputHandler);
+		}).bind(inputHandler);
 		
 		let cursorHome = (function() {
 			let buffer = this._bufferService.buffer;
@@ -112,17 +108,18 @@ export class LineEditorFeature extends PolymerElement {
 			} else {
 				this.cursorCharAbsolute({params:[1]});
 			}
-		}).bind(terminal._core._inputHandler);
+		}).bind(inputHandler);
 		
 		let backspace = (function() {
 			let buffer = this._bufferService.buffer;
 			let line = buffer.lines.get(buffer.ybase+buffer.y);
 			if (cursorBackwardWrapped()) deleteChar();
-			if (buffer.x==this._terminal.cols-1 && line.getTrimmedLength() == 0) {
+			if (buffer.x==this._bufferService.cols-1 && line.getTrimmedLength() == 0) {
 				line.isWrapped = false;
 			}
-		}).bind(terminal._core._inputHandler);
+		}).bind(inputHandler);
 		
+		const node = this.$node;
 		let linefeed = (function() {
 			let buffer = this._bufferService.buffer;
 			let range = buffer.getWrappedRangeForLine(buffer.y + buffer.ybase);
@@ -131,32 +128,30 @@ export class LineEditorFeature extends PolymerElement {
 				line += buffer.lines.get(i).translateToString();
 			}
 			line = line.replace(/\s+$/,"");
-			self.parentNode.dispatchEvent(new CustomEvent('line', {detail: line}));
-		}).bind(terminal._core._inputHandler);
-		
+			node.dispatchEvent(new CustomEvent('line', {detail: line}));
+		}).bind(inputHandler);
+						
 		this._disposables = [
-		
 		terminal.parser.registerCsiHandler({prefix: '<', final: 'H'}, cursorHome),	
-		terminal.registerCustomKeyEventHandler(ev=> ev.key=='Home', ()=> terminal.write('\x1b[<H')),
+		this.$node.customKeyEventHandlers.register(ev=> ev.key=='Home', ()=> terminal.write('\x1b[<H')),
 		
 		terminal.parser.registerCsiHandler({prefix: '<', final: 'E'}, cursorEnd),
-		terminal.registerCustomKeyEventHandler(ev=> ev.key=='End', ()=> terminal.write('\x1b[<E')),
+		this.$node.customKeyEventHandlers.register(ev=> ev.key=='End', ()=> terminal.write('\x1b[<E')),
 		
 		terminal.parser.registerCsiHandler({prefix: '<', final: 'L'}, cursorBackwardWrapped),
-		terminal.registerCustomKeyEventHandler(ev=> ev.key=='ArrowLeft', ()=> terminal.write('\x1b[<L')),
+		this.$node.customKeyEventHandlers.register(ev=> ev.key=='ArrowLeft', ()=> terminal.write('\x1b[<L')),
 		
 		terminal.parser.registerCsiHandler({prefix: '<', final: 'R'}, cursorForwardWrapped),
-		terminal.registerCustomKeyEventHandler(ev=> ev.key=='ArrowRight', ()=> terminal.write('\x1b[<R')),
+		this.$node.customKeyEventHandlers.register(ev=> ev.key=='ArrowRight', ()=> terminal.write('\x1b[<R')),
 		
 		terminal.parser.registerCsiHandler({prefix: '<', final: 'B'}, backspace),
-		terminal.registerCustomKeyEventHandler(ev=> ev.key=='Backspace', ()=> terminal.write('\x1b[<B')),
+		this.$node.customKeyEventHandlers.register(ev=> ev.key=='Backspace', ()=> terminal.write('\x1b[<B')),
 		
 		terminal.parser.registerCsiHandler({prefix: '<', final: 'D'}, deleteChar),
-		terminal.registerCustomKeyEventHandler(ev=> ev.key=='Delete', ()=> terminal.write('\x1b[<D')),
+		this.$node.customKeyEventHandlers.register(ev=> ev.key=='Delete', ()=> terminal.write('\x1b[<D')),
 		
-		terminal.registerCustomKeyEventHandler(ev=> ev.key=='Insert', ev=>{
-			let ins = terminal._core._inputHandler._terminal.insertMode;
-			console.log("INS");
+		this.$node.customKeyEventHandlers.register(ev=> ev.key=='Insert', ev=>{
+			let ins = inputHandler._coreService.modes.insertMode;
 			if (ins) {
 				terminal.write('\x1b[4l\x1b[2 q');
 			} else {
@@ -164,21 +159,21 @@ export class LineEditorFeature extends PolymerElement {
 			}
 		}),
 		
-		terminal.registerCustomKeyEventHandler(ev=> ev.key=='Enter', ev=>{
+		this.$node.customKeyEventHandlers.register(ev=> ev.key=='Enter', ()=>{
 			terminal.write('\x1b[<N\n');
 		}),
 		
-		terminal.registerCustomKeyEventHandler(ev=> [
+		this.$node.customKeyEventHandlers.register(ev=> [
 			'ArrowUp',
 			'ArrowDown',
 			'F1', 'F2', 'F3', 'F4', 'F7', 'F8', 'F9', 'F10', 'F11',
-		].includes(ev.key), ev=>ev.preventDefault() && false),
+		].includes(ev.key), ev=>{ev.preventDefault(); return false;}),
 		
-		terminal.registerCustomKeyEventHandler(ev=> [
+		this.$node.customKeyEventHandlers.register(ev=> [
 			'Escape'
-		].includes(ev.key), () => this.escapeEnabled),
+		].includes(ev.key), () => this.$.escapeEnabled),
 		
-		terminal.registerCustomKeyEventHandler(ev=> [
+		this.$node.customKeyEventHandlers.register(ev=> [
 			'F5',
 			'F6',
 			'F12'
@@ -187,25 +182,22 @@ export class LineEditorFeature extends PolymerElement {
 		terminal.parser.registerCsiHandler({prefix: '<', final: 'N'}, linefeed)
 
 		];
-	}
-	
-	dispose() {
-		this._disposables.forEach(d => d.dispose());
-		this._disposables.length = 0;
-	}
-
-	disconnectedCallback() {
- 		super.disconnectedCallback();
- 		this.dispose();
-	}
-	
-	connectedCallback () {
-		super.connectedCallback();
-		const terminal = this.parentNode;
-		terminal._loadFeature('console', this);
+		
 	}
 	
 }
 
-customElements.define(LineEditorFeature.is, LineEditorFeature);
-//https://github.com/xtermjs/xterm.js/blob/master/src/InputHandler.ts
+type Constructor<T = {}> = new (...args: any[]) => T;
+export function XTermConsoleMixin<TBase extends Constructor<TerminalMixin>>(Base: TBase) {
+  return class XTermConsoleMixin extends Base implements IConsoleMixin {
+	escapeEnabled: Boolean;
+	
+	connectedCallback() {
+		super.connectedCallback();
+		
+		let addon = new ConsoleAddon();
+	  	addon.$=this;
+	  	this.node.terminal.loadAddon(addon);
+	}
+  }
+}

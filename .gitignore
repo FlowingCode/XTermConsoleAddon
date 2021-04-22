@@ -3,6 +3,7 @@
 /.classpath
 /.project
 /node_modules
+/frontend
 /webpack.generated.js
 /node
 /drivers
@@ -10,3 +11,8 @@
 /webpack.config.js
 /package.json
 /error-screenshots
+/tsconfig.json
+/.npmrc
+/pnpm-lock.yaml
+/pnpmfile.js
+/types.d.ts

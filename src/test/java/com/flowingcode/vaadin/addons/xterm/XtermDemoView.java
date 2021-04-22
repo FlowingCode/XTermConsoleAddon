@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,9 +21,9 @@ package com.flowingcode.vaadin.addons.xterm;
 
 import com.flowingcode.vaadin.addons.DemoLayout;
 import com.flowingcode.vaadin.addons.GithubLink;
+import com.flowingcode.vaadin.addons.xterm.ITerminalClipboard.UseSystemClipboard;
 import com.flowingcode.vaadin.addons.xterm.ITerminalOptions.BellStyle;
 import com.flowingcode.vaadin.addons.xterm.ITerminalOptions.CursorStyle;
-import com.flowingcode.vaadin.addons.xterm.XTermClipboard.UseSystemClipboard;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
@@ -40,7 +40,7 @@ public class XtermDemoView extends VerticalLayout {
   private XTerm xterm;
 
   public XtermDemoView() {
-    this.setSizeFull();
+    setSizeFull();
     setPadding(false);
     getElement().getStyle().set("background", "black");
 
@@ -52,56 +52,44 @@ public class XtermDemoView extends VerticalLayout {
     xterm.setBellStyle(BellStyle.SOUND);
 
     xterm.setSizeFull();
-    xterm.loadFeature(
-        new XTermClipboard(),
-        clipboard -> {
-          clipboard.setCopySelection(true);
-          clipboard.setUseSystemClipboard(UseSystemClipboard.READWRITE);
-          clipboard.setPasteWithMiddleClick(true);
-          clipboard.setPasteWithRightClick(true);
-        });
-    xterm.loadFeature(
-        new XTermConsole(),
-        console -> {
-          console.addLineListener(
-              ev -> {
-                switch (ev.getLine().toLowerCase()) {
-                  case "time":
-                    xterm.writeln(
-                        LocalTime.now()
-                            .truncatedTo(ChronoUnit.SECONDS)
-                            .format(DateTimeFormatter.ISO_TIME));
-                    break;
-                  case "date":
-                    xterm.writeln(LocalDate.now().toString());
-                    break;
-                  case "beep":
-                    xterm.write("\u0007");
-                    break;
-                  case "color on":
-                    xterm.setTheme(
-                        new TerminalTheme()
-                            .withBackground("rgb(103,195,228)")
-                            .withForeground("rgb(0,0,0)"));
-                    break;
-                  case "color off":
-                    xterm.setTheme(new TerminalTheme());
-                    break;
-                  default:
-                    xterm.writeln("Bad command");
-                    Notification.show(ev.getLine());
-                }
-              });
+
+    xterm.setCopySelection(true);
+    xterm.setUseSystemClipboard(UseSystemClipboard.READWRITE);
+    xterm.setPasteWithMiddleClick(true);
+    xterm.setPasteWithRightClick(true);
+
+    xterm.addLineListener(
+        ev -> {
+          switch (ev.getLine().toLowerCase()) {
+            case "time":
+              xterm.writeln(
+                  LocalTime.now()
+                  .truncatedTo(ChronoUnit.SECONDS)
+                  .format(DateTimeFormatter.ISO_TIME));
+              break;
+            case "date":
+              xterm.writeln(LocalDate.now().toString());
+              break;
+            case "beep":
+              xterm.write("\u0007");
+              break;
+            case "color on":
+              xterm.setTheme(
+                  new TerminalTheme()
+                  .withBackground("rgb(103,195,228)")
+                  .withForeground("rgb(0,0,0)"));
+              break;
+            case "color off":
+              xterm.setTheme(new TerminalTheme());
+              break;
+            default:
+              xterm.writeln("Bad command");
+              Notification.show(ev.getLine());
+          }
         });
 
     xterm.focus();
-
-    xterm
-        .getFeature(XTermFit.class)
-        .ifPresent(
-            fit -> {
-              fit.fit();
-            });
+    xterm.fit();
     add(xterm);
   }
 }

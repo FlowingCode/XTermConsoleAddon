@@ -21,8 +21,6 @@ package com.flowingcode.vaadin.addons.xterm.integration;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-
-import com.flowingcode.vaadin.addons.xterm.XTermClipboard;
 import com.vaadin.testbench.TestBenchElement;
 import org.junit.Test;
 import org.openqa.selenium.interactions.Actions;
@@ -32,7 +30,6 @@ public class ClipboardFeatureIT extends AbstractXTermTest {
   @Test
   public void testFeature() {
     TestBenchElement term = $("fc-xterm").first();
-    assertFeatureHasBeenLoaded(term, XTermClipboard.class, "clipboard");
 
     write(term, "\\x1bcTEXT");
 

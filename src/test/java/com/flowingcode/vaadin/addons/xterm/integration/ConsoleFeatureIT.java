@@ -22,8 +22,6 @@ package com.flowingcode.vaadin.addons.xterm.integration;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isEmptyString;
 import static org.junit.Assert.assertThat;
-
-import com.flowingcode.vaadin.addons.xterm.XTermConsole;
 import com.vaadin.testbench.TestBenchElement;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
@@ -35,8 +33,6 @@ public class ConsoleFeatureIT extends AbstractXTermTest {
   @Test
   public void testFeature() throws InterruptedException {
     TestBenchElement term = $("fc-xterm").first();
-    assertFeatureHasBeenLoaded(term, XTermConsole.class, "console");
-    assertFeatureHasBeenLoaded(term, null, "insertFix");
 
     WebElement input =
         (WebElement) getCommandExecutor().executeScript("return document.activeElement");
