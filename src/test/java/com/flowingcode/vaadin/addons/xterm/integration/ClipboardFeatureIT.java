@@ -39,7 +39,7 @@ public class ClipboardFeatureIT extends AbstractXTermTest {
                 .executeScript(
                     "return [arguments[0].clientWidth, arguments[0].clientHeight]", term));
     getCommandExecutor()
-        .executeScript("arguments[0].useSystemClipboard='false'", $("fc-xterm-clipboard").first());
+        .executeScript("arguments[0].useSystemClipboard='false'", $("fc-xterm").first());
 
     new Actions(driver)
         .moveToElement(term, -size[0] / 2, -size[1] / 2)

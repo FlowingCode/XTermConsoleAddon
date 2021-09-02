@@ -19,13 +19,10 @@
  */
 package com.flowingcode.vaadin.addons.xterm.integration;
 
-import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
-
 import com.vaadin.testbench.TestBenchElement;
-import java.util.List;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
@@ -80,20 +77,8 @@ public class XTermIT extends AbstractXTermTest {
   @Test
   public void componentWorks() {
     TestBenchElement term = $("fc-xterm").first();
-
     assertThat(term, hasBeenUpgradedToCustomElement);
-
     term.findElement(By.xpath("./*[@slot='terminal-container']"));
-
-    List<WebElement> features = term.findElements(By.xpath("./*[@slot='feature']"));
-
-    assertThat(features, is(not(empty())));
-    for (WebElement feature : features) {
-      System.out.println(feature.getTagName());
-    }
-    for (WebElement feature : features) {
-      assertThat((TestBenchElement) feature, isFeature);
-    }
   }
 
   @Test
