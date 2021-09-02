@@ -9,7 +9,7 @@
     <description>Integration of xterm.js for Vaadin Flow</description>
 
     <properties>
-        <vaadin.version>19.0.4</vaadin.version>
+        <vaadin.version>20.0.7</vaadin.version>
 
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
