@@ -65,21 +65,16 @@ xterm.setCursorBlink(true);
 xterm.setCursorStyle(CursorStyle.UNDERLINE);
     	
 xterm.setSizeFull();
-xterm.loadFeature(new XTermClipboard(), clipboard->{
-    clipboard.setCopySelection(true);
-    clipboard.setUseSystemClipboard(UseSystemClipboard.READWRITE);
-    clipboard.setPasteWithRightClick(true);
-});
+xterm.setCopySelection(true);
+xterm.setUseSystemClipboard(UseSystemClipboard.READWRITE);
+xterm.setPasteWithRightClick(true);
 
-xterm.loadFeature(new XTermConsole(), console->{
-    console.addLineListener(ev->{
+xterm.addLineListener(ev->{
     String line = ev.getLine();
     System.out.println(line);
 });	
 		
 xterm.focus();
     	
-xterm.getFeature(XTermFit.class).ifPresent(fit->{
-   fit.fit();
-});
+xterm.fit();
 ```
