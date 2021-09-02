@@ -1,4 +1,4 @@
-[![Build Status](https://jenkins.flowingcode.com/job/XTerm-14-addon/badge/icon)](https://jenkins.flowingcode.com/job/XTerm-14-addon)
+[![Build Status](https://jenkins.flowingcode.com/job/XTerm-2-addon/badge/icon)](https://jenkins.flowingcode.com/job/XTerm-2-addon)
 
 # XTerm Console Add-on
 
