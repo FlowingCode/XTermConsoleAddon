@@ -22,7 +22,9 @@ package com.flowingcode.vaadin.addons.xterm.integration;
 import com.vaadin.testbench.ScreenshotOnFailureRule;
 import com.vaadin.testbench.TestBench;
 import com.vaadin.testbench.parallel.ParallelTest;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.openqa.selenium.chrome.ChromeDriver;
 
@@ -52,6 +54,11 @@ public abstract class AbstractViewTest extends ParallelTest {
 
   protected AbstractViewTest(String route) {
     this.route = route;
+  }
+
+  @BeforeClass
+  public static void setupClass() {
+    WebDriverManager.chromedriver().setup();
   }
 
   @Override
