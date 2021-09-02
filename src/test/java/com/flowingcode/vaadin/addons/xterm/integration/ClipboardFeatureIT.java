@@ -42,7 +42,7 @@ public class ClipboardFeatureIT extends AbstractXTermTest {
         .executeScript("arguments[0].useSystemClipboard='false'", $("fc-xterm").first());
 
     new Actions(driver)
-        .moveToElement(term, -size[0] / 2, -size[1] / 2)
+        .moveToElement(term, -size[0] / 2, -size[1] / 2 + 10)
         .clickAndHold()
         .moveByOffset(100, 0)
         .release()
