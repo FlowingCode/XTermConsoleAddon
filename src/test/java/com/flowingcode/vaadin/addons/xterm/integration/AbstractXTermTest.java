@@ -54,7 +54,7 @@ public abstract class AbstractXTermTest extends AbstractViewTest {
         intArray(
             getCommandExecutor()
                 .executeScript(
-                    "buffer=arguments[0].terminal.buffer; return [buffer.cursorX, buffer.cursorY]",
+                    "buffer=arguments[0].terminal.buffer.active; return [buffer.cursorX, buffer.cursorY]",
                     terminal));
     return new Position(pos[0], pos[1]);
   }

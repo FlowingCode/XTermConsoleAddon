@@ -30,7 +30,6 @@ public class FitFeatureIT extends AbstractXTermTest {
   @Test
   public void testFeature() {
     TestBenchElement term = $("fc-xterm").first();
-    // assertFeatureHasBeenLoaded(term, XTermFit.class, "fit");
 
     int colsBefore = getColumnWidth(term);
     Dimension dimension = getDriver().manage().window().getSize();
