@@ -53,26 +53,6 @@ public class XTermIT extends AbstractXTermTest {
         }
       };
 
-  private Matcher<TestBenchElement> isFeature =
-      new TypeSafeDiagnosingMatcher<TestBenchElement>() {
-
-        @Override
-        public void describeTo(Description description) {
-          description.appendText("a feature");
-        }
-
-        @Override
-        protected boolean matchesSafely(TestBenchElement item, Description mismatchDescription) {
-          String script =
-              "let e=arguments[0]; return Object.values(e.parentNode.features).includes(e)";
-          if ((Boolean) item.getCommandExecutor().executeScript(script, item)) return true;
-          else {
-            mismatchDescription.appendText(item.getTagName() + " ");
-            mismatchDescription.appendDescriptionOf(is(not(this)));
-            return false;
-          }
-        }
-      };
 
   @Test
   public void componentWorks() {
