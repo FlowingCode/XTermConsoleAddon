@@ -27,12 +27,6 @@ interface IConsoleMixin extends TerminalMixin {
 class ConsoleAddon extends TerminalAddon<IConsoleMixin> {
 	
 	activateCallback(terminal: Terminal): void {
-		//const self = this;
-		
-		/*
-		const this.$node = this.this.$node;
-		const terminal = this.this.$node.terminal;
-		*/
 		
 		var inputHandler = ((this.$core) as any)._inputHandler;
 		
