@@ -27,4 +27,10 @@ import com.vaadin.flow.component.dependency.JsModule;
 @Tag("fc-xterm")
 @JsModule("./fc-xterm/xterm.ts")
 public class XTerm extends XTermBase
-    implements ITerminalFit, ITerminalConsole, ITerminalClipboard {}
+    implements ITerminalFit, ITerminalConsole, ITerminalClipboard {
+
+  public XTerm() {
+    setInsertMode(true);
+  }
+
+}
