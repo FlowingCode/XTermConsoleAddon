@@ -1,11 +1,18 @@
 package com.flowingcode.vaadin.addons.xterm;
 
+import com.flowingcode.vaadin.addons.xterm.utils.StateMemoizer;
+import lombok.experimental.Delegate;
+
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 /**
  * Add-on which preserves the client-side state when the component is removed
- * from the UI then reattached later on.
+ * from the UI then reattached later on. The problem here is that when the
+ * {@link XTerm} server-side component is detached from the UI, the xterm.js client-side
+ * component is destroyed along with its state. When the {@link XTerm} component
+ * is later re-attached to the UI, a new unconfigured xterm.js is created on the
+ * client-side.
  * <p></p>
  * To use this addon, simply create the addon then make sure to call all {@link ITerminal}
  * and {@link ITerminalOptions} methods via this addon:
@@ -16,19 +23,49 @@ import java.util.concurrent.CompletableFuture;
  * addon.write("$ ");
  * </pre>
  */
-public class PreserveStateAddon implements ITerminal {
-    private final XTermBase xterm;
+public class PreserveStateAddon implements ITerminal, ITerminalOptions {
+    /**
+     * The xterm to delegate all calls to.
+     */
+    private final XTerm xterm;
+    /**
+     * Remembers everything that was printed into the xterm and what the user typed in.
+     */
     private final StringBuilder scrollbackBuffer = new StringBuilder();
     /**
      * All commands are properly applied before the first attach; they're just
      * not preserved after subsequent detach/attach.
      */
     private boolean wasDetachedOnce = false;
+    /**
+     * Used to re-apply all options to the xterm after it has been reattached back to the UI.
+     * Otherwise, the options would not be applied to the client-side xterm.js component.
+     */
+    private final StateMemoizer optionsMemoizer;
+
+    /**
+     * Delegate all option setters through this delegate, which is the {@link #optionsMemoizer} proxy.
+     * That will allow us to re-apply the settings when the xterm is re-attached.
+     * <p></p>
+     * For example, calling {@link ITerminalOptions#setBellSound(String)}
+     * on this addon will pass through the call to this delegate, which in turn passes
+     * the call to {@link #optionsMemoizer} which remembers the call and passes
+     * it to {@link #xterm}.
+     * <p></p>
+     * After the xterm.js is re-attached, we simply call {@link StateMemoizer#apply()}
+     * to apply all changed setters again to xterm.js, to make sure xterm.js is
+     * configured.
+     */
+    @Delegate
+    private final ITerminalOptions optionsDelegate;
 
     public PreserveStateAddon(XTerm xterm) {
         this.xterm = Objects.requireNonNull(xterm);
+        optionsMemoizer = new StateMemoizer(xterm, ITerminalOptions.class);
+        optionsDelegate = (ITerminalOptions) optionsMemoizer.getProxy();
         xterm.addAttachListener(e -> {
             if (wasDetachedOnce) {
+                optionsMemoizer.apply();
                 xterm.write(scrollbackBuffer.toString());
             }
         });
