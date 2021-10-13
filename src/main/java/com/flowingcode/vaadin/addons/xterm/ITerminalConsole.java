@@ -54,4 +54,10 @@ public interface ITerminalConsole extends HasElement {
     Component terminal = getElement().getComponent().get();
     return ComponentUtil.addListener(terminal, LineEvent.class, listener);
   }
+
+  /** Set the insert mode. */
+  default void setInsertMode(boolean insertMode) {
+    ((XTermBase) this).executeJs("this.insertMode=$0", insertMode);
+  }
+
 }
