@@ -22,6 +22,7 @@ import { TerminalMixin, TerminalAddon } from '@vaadin/flow-frontend/fc-xterm/xte
 
 interface IConsoleMixin extends TerminalMixin {
 	escapeEnabled: Boolean;
+	insertMode: Boolean;
 }
 
 class ConsoleAddon extends TerminalAddon<IConsoleMixin> {
@@ -145,12 +146,7 @@ class ConsoleAddon extends TerminalAddon<IConsoleMixin> {
 		this.$node.customKeyEventHandlers.register(ev=> ev.key=='Delete', ()=> terminal.write('\x1b[<D')),
 		
 		this.$node.customKeyEventHandlers.register(ev=> ev.key=='Insert', ev=>{
-			let ins = inputHandler._coreService.modes.insertMode;
-			if (ins) {
-				terminal.write('\x1b[4l\x1b[2 q');
-			} else {
-				terminal.write('\x1b[4h\x1b[3 q');
-			}
+			this.$.insertMode = !this.$.insertMode;
 		}),
 		
 		this.$node.customKeyEventHandlers.register(ev=> ev.key=='Enter', ()=>{
@@ -193,5 +189,19 @@ export function XTermConsoleMixin<TBase extends Constructor<TerminalMixin>>(Base
 	  	addon.$=this;
 	  	this.node.terminal.loadAddon(addon);
 	}
-  }
+	
+	get insertMode(): Boolean {
+		return this.node.terminal.modes.insertMode;
+	}
+
+	set insertMode(value: Boolean) {
+		if (value) {
+			this.node.terminal.write('\x1b[4h\x1b[3 q');
+		} else {
+			this.node.terminal.write('\x1b[4l\x1b[2 q');
+		}
+	}
+
+ }
 }
+
