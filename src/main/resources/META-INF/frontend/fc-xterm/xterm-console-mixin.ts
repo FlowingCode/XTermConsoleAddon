@@ -23,9 +23,22 @@ import { TerminalMixin, TerminalAddon } from '@vaadin/flow-frontend/fc-xterm/xte
 interface IConsoleMixin extends TerminalMixin {
 	escapeEnabled: Boolean;
 	insertMode: Boolean;
+	readonly currentLine: string;
 }
 
 class ConsoleAddon extends TerminalAddon<IConsoleMixin> {
+
+	get currentLine() : string {
+		let inputHandler = ((this.$core) as any)._inputHandler;
+		let buffer = inputHandler._bufferService.buffer;
+		let range = buffer.getWrappedRangeForLine(buffer.y + buffer.ybase);
+		let line = "";
+		for (let i=range.first; i<=range.last; i++) {
+			line += buffer.lines.get(i).translateToString();
+		}
+		line = line.replace(/\s+$/,"");
+		return line;
+	}
 	
 	activateCallback(terminal: Terminal): void {
 		
@@ -115,17 +128,39 @@ class ConsoleAddon extends TerminalAddon<IConsoleMixin> {
 		}).bind(inputHandler);
 		
 		const node = this.$node;
-		let linefeed = (function() {
+		let linefeed = function() {
+			node.dispatchEvent(new CustomEvent('line', {detail: this.currentLine}));
+		}.bind(this);
+		
+		let eraseInLine = (function(params: any) {
 			let buffer = this._bufferService.buffer;
+			let x = buffer.x;
+			let y = buffer.y;
+
+			this.eraseInLine({params});
 			let range = buffer.getWrappedRangeForLine(buffer.y + buffer.ybase);
-			let line = "";
-			for (let i=range.first; i<=range.last; i++) {
-				line += buffer.lines.get(i).translateToString();
+			
+			if (params[0] == 1 || params[0] == 2) {
+				//Start of line through cursor 
+				for (let i=range.first; i<y; i++) {
+					buffer.y = i; 
+					this.eraseInLine({params: [2]});
+				}
 			}
-			line = line.replace(/\s+$/,"");
-			node.dispatchEvent(new CustomEvent('line', {detail: line}));
+			
+			if (params[0] == 0 || params[0] == 2) {
+				//Cursor to end of line
+				for (let i=y+1; i<=range.last; i++) {
+					buffer.y = i; 
+					this.eraseInLine({params: [2]});
+					buffer.lines.get(buffer.ybase+buffer.y).isWrapped=false;
+				}
+			}
+
+			buffer.x = x;
+			buffer.y = y;
 		}).bind(inputHandler);
-						
+		
 		this._disposables = [
 		terminal.parser.registerCsiHandler({prefix: '<', final: 'H'}, cursorHome),	
 		this.$node.customKeyEventHandlers.register(ev=> ev.key=='Home', ()=> terminal.write('\x1b[<H')),
@@ -144,6 +179,8 @@ class ConsoleAddon extends TerminalAddon<IConsoleMixin> {
 		
 		terminal.parser.registerCsiHandler({prefix: '<', final: 'D'}, deleteChar),
 		this.$node.customKeyEventHandlers.register(ev=> ev.key=='Delete', ()=> terminal.write('\x1b[<D')),
+		
+		terminal.parser.registerCsiHandler({prefix: '<', final: 'K'}, eraseInLine),
 		
 		this.$node.customKeyEventHandlers.register(ev=> ev.key=='Insert', ev=>{
 			this.$.insertMode = !this.$.insertMode;
@@ -180,14 +217,16 @@ class ConsoleAddon extends TerminalAddon<IConsoleMixin> {
 type Constructor<T = {}> = new (...args: any[]) => T;
 export function XTermConsoleMixin<TBase extends Constructor<TerminalMixin>>(Base: TBase) {
   return class XTermConsoleMixin extends Base implements IConsoleMixin {
+	
+	_addon? : ConsoleAddon; 
 	escapeEnabled: Boolean;
 	
 	connectedCallback() {
 		super.connectedCallback();
 		
-		let addon = new ConsoleAddon();
-	  	addon.$=this;
-	  	this.node.terminal.loadAddon(addon);
+		this._addon = new ConsoleAddon();
+		this._addon.$=this;
+		this.node.terminal.loadAddon(this._addon);
 	}
 	
 	get insertMode(): Boolean {
@@ -202,6 +241,9 @@ export function XTermConsoleMixin<TBase extends Constructor<TerminalMixin>>(Base
 		}
 	}
 
+	get currentLine() : string {
+		return this._addon.currentLine;
+	}
+
  }
 }
-
