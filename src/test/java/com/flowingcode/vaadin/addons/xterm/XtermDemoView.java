@@ -46,7 +46,7 @@ public class XtermDemoView extends VerticalLayout {
 
     xterm = new XTerm();
     xterm.writeln("xterm add-on by Flowing Code S.A.\n\n");
-    xterm.writeln("Commands: time, date, beep, color on, color off\n");
+    xterm.writeln("Commands: time, date, beep, color on, color off, history\n");
     xterm.setCursorBlink(true);
     xterm.setCursorStyle(CursorStyle.UNDERLINE);
     xterm.setBellStyle(BellStyle.SOUND);
@@ -57,6 +57,8 @@ public class XtermDemoView extends VerticalLayout {
     xterm.setUseSystemClipboard(UseSystemClipboard.READWRITE);
     xterm.setPasteWithMiddleClick(true);
     xterm.setPasteWithRightClick(true);
+
+    xterm.getHistory().setEnabled(true);
 
     xterm.addLineListener(
         ev -> {
@@ -82,6 +84,9 @@ public class XtermDemoView extends VerticalLayout {
             case "color off":
               xterm.setTheme(new TerminalTheme());
               break;
+            case "history":
+              showHistory();
+              break;
             default:
               xterm.writeln("Bad command");
               Notification.show(ev.getLine());
@@ -92,4 +97,14 @@ public class XtermDemoView extends VerticalLayout {
     xterm.fit();
     add(xterm);
   }
+
+  private void showHistory() {
+    int index = 1;
+    StringBuilder sb = new StringBuilder();
+    for (String line : xterm.getHistory().getLines()) {
+      sb.append(String.format("%5s  %s\n", index++, line));
+    }
+    xterm.write(sb.toString());
+  }
+
 }

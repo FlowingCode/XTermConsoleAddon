@@ -27,6 +27,8 @@ import com.vaadin.flow.component.DomEvent;
 import com.vaadin.flow.component.EventData;
 import com.vaadin.flow.component.HasElement;
 import com.vaadin.flow.shared.Registration;
+import elemental.json.JsonValue;
+import java.util.concurrent.CompletableFuture;
 import lombok.Getter;
 
 /**
@@ -58,6 +60,12 @@ public interface ITerminalConsole extends HasElement {
   /** Set the insert mode. */
   default void setInsertMode(boolean insertMode) {
     ((XTermBase) this).executeJs("this.insertMode=$0", insertMode);
+  }
+
+  /** Returns the text in the current line */
+  default CompletableFuture<String> getCurrentLine() {
+    return getElement().executeJs("return this.currentLine").toCompletableFuture()
+        .thenApply(JsonValue::asString);
   }
 
 }
