@@ -19,17 +19,24 @@
  */
 package com.flowingcode.vaadin.addons.xterm.test;
 
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThat;
+import com.flowingcode.vaadin.addons.xterm.TerminalHistory;
 import com.flowingcode.vaadin.addons.xterm.XTerm;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Method;
+import java.util.ListIterator;
+import java.util.stream.IntStream;
 import org.junit.Test;
 
 public class SerializationTest {
 
-  private void testSerializationOf(Object obj) throws IOException, ClassNotFoundException {
+  private <T> T shake(T obj) throws IOException, ClassNotFoundException {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
     try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
@@ -40,10 +47,56 @@ public class SerializationTest {
         new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()))) {
       obj.getClass().cast(in.readObject());
     }
+
+    return obj;
   }
 
   @Test
   public void testSerialization() throws ClassNotFoundException, IOException {
-    testSerializationOf(new XTerm());
+    shake(new XTerm());
   }
+
+  @SuppressWarnings("serial")
+  private final static class TestTerminalHistory extends TerminalHistory {
+    public TestTerminalHistory(XTerm terminal) {
+      super(terminal);
+    }
+
+    @SuppressWarnings("unchecked")
+    public ListIterator<String> listIterator() {
+      try {
+        Method method = TerminalHistory.class.getDeclaredMethod("listIterator");
+        method.setAccessible(true);
+        return (ListIterator<String>) method.invoke(this);
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    }
+  }
+
+  @Test
+  public void testTerminalHistorySerialization() throws ClassNotFoundException, IOException {
+    // prepare
+    TestTerminalHistory history = new TestTerminalHistory(new XTerm());
+
+    assertThat(history.listIterator(), is(notNullValue()));
+    assertThat(history.listIterator().nextIndex(), is(0));
+
+    shake(history);
+    assertThat(history.listIterator(), is(notNullValue()));
+    assertThat(history.listIterator().previousIndex(), is(-1));
+
+    int n = 5;
+    IntStream.range(0, n).mapToObj(Integer::toString).forEach(history::add);
+    assertThat(history.listIterator().nextIndex(), is(n));
+
+    history.listIterator().previous();
+    history.listIterator().previous();
+    assertThat(history.listIterator().nextIndex(), is(n - 2));
+
+    // assert
+    shake(history);
+    assertThat(history.listIterator().nextIndex(), is(n - 2));
+  }
+
 }
