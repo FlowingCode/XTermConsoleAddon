@@ -46,7 +46,7 @@ public class XtermDemoView extends VerticalLayout {
 
     xterm = new XTerm();
     xterm.writeln("xterm add-on by Flowing Code S.A.\n\n");
-    xterm.writeln("Commands: time, date, beep, color on, color off, history\n");
+    xterm.writeln("Commands: time, date, beep, color, history\n");
     xterm.setCursorBlink(true);
     xterm.setCursorStyle(CursorStyle.UNDERLINE);
     xterm.setBellStyle(BellStyle.SOUND);
@@ -62,7 +62,8 @@ public class XtermDemoView extends VerticalLayout {
 
     xterm.addLineListener(
         ev -> {
-          switch (ev.getLine().toLowerCase()) {
+          String[] line = ev.getLine().toLowerCase().split("\\s+",2);
+          switch (line[0]) {
             case "time":
               xterm.writeln(
                   LocalTime.now()
@@ -75,14 +76,21 @@ public class XtermDemoView extends VerticalLayout {
             case "beep":
               xterm.write("\u0007");
               break;
-            case "color on":
-              xterm.setTheme(
-                  new TerminalTheme()
-                  .withBackground("rgb(103,195,228)")
-                  .withForeground("rgb(0,0,0)"));
-              break;
-            case "color off":
-              xterm.setTheme(new TerminalTheme());
+            case "color":
+              if (line.length>1) {
+                if (line[1].equals("on")) {
+                  xterm.setTheme(
+                    new TerminalTheme()
+                    .withBackground("rgb(103,195,228)")
+                    .withForeground("rgb(0,0,0)"));
+                  break;
+                } else if (line[1].equals("off")) {
+                  xterm.setTheme(new TerminalTheme());
+                  break;
+                }
+              }
+              xterm.writeln("color on:  use TI-99/4A palette");
+              xterm.writeln("color off: use default palette");
               break;
             case "history":
               showHistory();
