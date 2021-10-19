@@ -24,7 +24,6 @@ import com.flowingcode.vaadin.addons.GithubLink;
 import com.flowingcode.vaadin.addons.xterm.ITerminalClipboard.UseSystemClipboard;
 import com.flowingcode.vaadin.addons.xterm.ITerminalOptions.BellStyle;
 import com.flowingcode.vaadin.addons.xterm.ITerminalOptions.CursorStyle;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import java.time.LocalDate;
@@ -97,9 +96,8 @@ public class XtermDemoView extends VerticalLayout {
               break;
             default:
               if (!ev.getLine().trim().isEmpty()) {
-                xterm.writeln("Bad command");
+                xterm.writeln("Unknown command: " + line[0]);
               }
-              Notification.show(ev.getLine());
           }
         });
 
