@@ -96,7 +96,9 @@ public class XtermDemoView extends VerticalLayout {
               showHistory();
               break;
             default:
-              xterm.writeln("Bad command");
+              if (!ev.getLine().trim().isEmpty()) {
+                xterm.writeln("Bad command");
+              }
               Notification.show(ev.getLine());
           }
         });
