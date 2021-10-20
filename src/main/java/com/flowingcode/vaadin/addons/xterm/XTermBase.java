@@ -50,7 +50,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -81,7 +80,7 @@ public abstract class XTermBase extends Component
       Function<JsonValue, Object> mapping = getResultTypeMapper(method);
 
       String name = method.getName();
-      CompletableFuture<JsonValue> result = invoke(name, args);
+      CompletableFuture<JsonValue> result = invoke(mapping!=null, name, args);
 
       if (mapping != null) {
         return result.thenApply(json -> (json instanceof JsonNull) ? null : mapping.apply(json));
@@ -113,7 +112,7 @@ public abstract class XTermBase extends Component
       }
     }
 
-    private CompletableFuture<JsonValue> invoke(String name, Object[] args) {
+    private CompletableFuture<JsonValue> invoke(boolean hasResult, String name, Object[] args) {
       if (name.startsWith("set") && args.length == 1) {
         name = name.substring("set".length());
         name = name.substring(0, 1).toLowerCase(Locale.ENGLISH) + name.substring(1);
@@ -125,11 +124,11 @@ public abstract class XTermBase extends Component
         } else {
           arg = (Serializable) args[0];
         }
-        return executeJs("this.terminal.setOption($0,$1)", name, arg);
+        return executeJs(false, "this.terminal.setOption($0,$1)", name, arg);
       } else if (args == null || args.length == 0) {
-        return executeJs("this.terminal[$0]()", name);
+        return executeJs(hasResult, "return this.terminal[$0]()", name);
       } else if (args.length == 1) {
-        return executeJs("this.terminal[$0]($1)", name, (Serializable) args[0]);
+        return executeJs(hasResult, "return this.terminal[$0]($1)", name, (Serializable) args[0]);
       } else {
         Serializable[] sargs = new Serializable[args.length];
         System.arraycopy(args, 0, sargs, 0, args.length);
@@ -137,7 +136,7 @@ public abstract class XTermBase extends Component
             IntStream.rangeClosed(1, args.length)
                 .mapToObj(i -> "$" + i)
                 .collect(Collectors.joining(","));
-        return executeJs("this.terminal[$0](" + expr + ")", name, sargs);
+        return executeJs(hasResult, "return this.terminal[$0](" + expr + ")", name, sargs);
       }
     }
   }
@@ -188,22 +187,22 @@ public abstract class XTermBase extends Component
     }
   }
 
-  protected CompletableFuture<JsonValue> executeJs(String expression, Serializable... parameters) {
-    if (deferredCommands == null) {
+  private CompletableFuture<JsonValue> executeJs(boolean hasResult, String expression, Serializable... parameters) {
+    if (!hasResult) {
+      executeJs(expression, parameters);
+      return CompletableFuture.completedFuture(null);
+    } else if (deferredCommands == null) {
       return getElement().executeJs(expression, parameters).toCompletableFuture();
     } else {
-      CompletableFuture<JsonValue> future = new CompletableFuture<>();
-      deferredCommands.add(
-          () -> {
-            try {
-              executeJs(expression, parameters).get();
-            } catch (ExecutionException e) {
-              future.completeExceptionally(e.getCause());
-            } catch (Exception e) {
-              future.completeExceptionally(e);
-            }
-          });
-      return future;
+      throw new IllegalStateException("Component is not attached");
+    }
+  }
+  
+  protected void executeJs(String expression, Serializable... parameters) {
+    if (deferredCommands == null) {
+      getElement().executeJs(expression, parameters);
+    } else {
+      deferredCommands.add(() -> getElement().executeJs(expression, parameters));
     }
   }
 
