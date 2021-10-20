@@ -22,6 +22,7 @@ package com.flowingcode.vaadin.addons.xterm.integration;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
+import com.vaadin.testbench.HasTestBenchCommandExecutor;
 import com.vaadin.testbench.TestBenchElement;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -64,8 +65,9 @@ public class XTermIT extends AbstractXTermTest {
   @Test
   public void writeText() throws InterruptedException {
     TestBenchElement term = $("fc-xterm").first();
-    WebElement input =
-        (WebElement) getCommandExecutor().executeScript("return document.activeElement");
+
+    WebElement input = (WebElement) waitUntil(driver -> ((HasTestBenchCommandExecutor) driver)
+        .getCommandExecutor().executeScript("return arguments[0].terminal.textarea", term));
 
     int y = cursorPosition(term).y;
 
