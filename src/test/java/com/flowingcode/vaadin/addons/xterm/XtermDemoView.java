@@ -57,7 +57,7 @@ public class XtermDemoView extends VerticalLayout {
     xterm.setPasteWithMiddleClick(true);
     xterm.setPasteWithRightClick(true);
 
-    xterm.getHistory().setEnabled(true);
+    TerminalHistory.extend(xterm);
 
     xterm.addLineListener(
         ev -> {
@@ -109,7 +109,7 @@ public class XtermDemoView extends VerticalLayout {
   private void showHistory() {
     int index = 1;
     StringBuilder sb = new StringBuilder();
-    for (String line : xterm.getHistory().getLines()) {
+    for (String line : TerminalHistory.of(xterm).getLines()) {
       sb.append(String.format("%5s  %s\n", index++, line));
     }
     xterm.write(sb.toString());

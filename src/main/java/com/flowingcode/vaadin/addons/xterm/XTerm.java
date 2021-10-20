@@ -29,18 +29,8 @@ import com.vaadin.flow.component.dependency.JsModule;
 public class XTerm extends XTermBase
     implements ITerminalFit, ITerminalConsole, ITerminalClipboard {
 
-  private TerminalHistory history;
-
   public XTerm() {
     setInsertMode(true);
-  }
-
-  /** Returns the terminal history. */
-  public TerminalHistory getHistory() {
-    if (history == null) {
-      history = new TerminalHistory(this);
-    }
-    return history;
   }
 
 }
