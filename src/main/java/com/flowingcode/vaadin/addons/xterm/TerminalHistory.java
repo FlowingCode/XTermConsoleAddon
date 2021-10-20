@@ -1,5 +1,6 @@
 package com.flowingcode.vaadin.addons.xterm;
 
+import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.shared.Registration;
 import java.io.IOException;
@@ -33,8 +34,23 @@ public class TerminalHistory implements Serializable {
 
   private Integer maxSize;
 
-  public <T extends XTermBase & ITerminalConsole> TerminalHistory(T terminal) {
+  protected <T extends XTermBase & ITerminalConsole> TerminalHistory(T terminal) {
+    if (TerminalHistory.of(terminal) != null) {
+      throw new IllegalArgumentException("The terminal already has a history");
+    }
     this.terminal = terminal;
+    ComponentUtil.setData(terminal, TerminalHistory.class, this);
+  }
+
+  /** Returns the command history of the terminal. */
+  public static <T extends XTermBase & ITerminalConsole> TerminalHistory of(T xterm) {
+    return ComponentUtil.getData(xterm, TerminalHistory.class);
+  }
+
+  /** Adds support for command history to the given terminal. */
+  public static <T extends XTermBase & ITerminalConsole> void extend(XTerm xterm) {
+    TerminalHistory history = new TerminalHistory(xterm);
+    history.setEnabled(true);
   }
 
   /**
