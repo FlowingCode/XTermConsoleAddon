@@ -64,10 +64,13 @@ public class ConsoleFeatureIT extends AbstractXTermTest {
     assertThat(cursorPosition(term), is(at(0, y)));
 
     input.sendKeys("A");
-    assertThat(currentLine(term), is("ALL"));
+    assertThat(currentLine(term), is("AELL"));
 
     input.sendKeys(Keys.INSERT, "B");
     assertThat(currentLine(term), is("ABLL"));
+
+    input.sendKeys(Keys.INSERT, "C");
+    assertThat(currentLine(term), is("ABCLL"));
 
     // long line
 
