@@ -32,6 +32,8 @@ public class TerminalHistory implements Serializable {
 
   private String lastRet;
 
+  private String initialLine;
+
   private Integer maxSize;
 
   protected <T extends XTermBase & ITerminalConsole> TerminalHistory(T terminal) {
@@ -93,7 +95,14 @@ public class TerminalHistory implements Serializable {
   }
 
   private void handleArrowUp() {
-    write(previous());
+    if (initialLine == null) {
+      ((ITerminalConsole) terminal).getCurrentLine().thenAccept(currentLine -> {
+        initialLine = currentLine;
+        write(previous());
+      });
+    } else {
+      write(previous());
+    }
   }
 
   private void handleArrowDown() {
@@ -161,6 +170,7 @@ public class TerminalHistory implements Serializable {
 
   private void setCurrentLine(String currentLine) {
     if (!currentLine.equals(lastRet)) {
+      initialLine = currentLine;
       prefix = currentLine;
       iterator = null;
     }
@@ -181,7 +191,11 @@ public class TerminalHistory implements Serializable {
   }
 
   private String next() {
-    return find(forwardIterator(), line -> true).orElse("");
+    return find(forwardIterator(), line -> true).orElseGet(() -> {
+      String result = initialLine;
+      initialLine = null;
+      return result;
+    });
   }
 
   private String findPrevious(String currentLine) {
