@@ -53,7 +53,8 @@ public class TerminalHistoryIT extends AbstractXTermTest {
     assertThat(cursorPosition(term), is(at(0, y += 4)));
     assertThat(lineAtOffset(term, 0), isEmptyString());
 
-    input.sendKeys("f", Keys.PAGE_UP);
+    input.sendKeys("f");
+    input.sendKeys(Keys.PAGE_UP);
     assertThat(currentLine(term), is("foo3"));
 
     input.sendKeys(Keys.PAGE_UP);

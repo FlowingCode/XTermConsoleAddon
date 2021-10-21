@@ -88,6 +88,7 @@ class CustomKeyEventHandlerRegistry {
 }
 	
 export interface TerminalMixin {
+  _dispatchCustomKeyEvent(detail : any) : void;
   connectedCallback(): void;  
   node: XTermElement;
 }
@@ -191,8 +192,12 @@ export class XTermElement extends LitElement implements TerminalMixin {
   }
     
   registerCustomKeyListener(customKey: CustomKey) : integer {
-    let handler : KeyboardEventHandler = (ev: KeyboardEvent) => this.dispatchEvent(new CustomEvent('CustomKey', {detail: ev}));
+    let handler : KeyboardEventHandler = (ev: KeyboardEvent) => this._dispatchCustomKeyEvent(ev);
     return this.customKeyEventHandlers.register(customKey, handler).id;
+  }
+
+  _dispatchCustomKeyEvent(detail : any) {
+    this.dispatchEvent(new CustomEvent('CustomKey', {detail}));
   }
 
 }

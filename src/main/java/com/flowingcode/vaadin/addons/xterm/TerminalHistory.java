@@ -2,6 +2,7 @@ package com.flowingcode.vaadin.addons.xterm;
 
 import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.Key;
+import com.vaadin.flow.server.Command;
 import com.vaadin.flow.shared.Registration;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -80,11 +81,18 @@ public class TerminalHistory implements Serializable {
     } else if (enabled && registrations == null) {
       registrations = new ArrayList<>();
       registrations.add(((ITerminalConsole) terminal).addLineListener(ev -> add(ev.getLine())));
-      registrations.add(terminal.addCustomKeyListener(ev -> handleArrowUp(), Key.ARROW_UP));
-      registrations.add(terminal.addCustomKeyListener(ev -> handleArrowDown(), Key.ARROW_DOWN));
-      registrations.add(terminal.addCustomKeyListener(ev -> handlePageUp(), Key.PAGE_UP));
-      registrations.add(terminal.addCustomKeyListener(ev -> handlePageDown(), Key.PAGE_DOWN));
+      registerCustomKeyListener(this::handleArrowUp, Key.ARROW_UP);
+      registerCustomKeyListener(this::handleArrowDown, Key.ARROW_DOWN);
+      registerCustomKeyListener(this::handlePageUp, Key.PAGE_UP);
+      registerCustomKeyListener(this::handlePageDown, Key.PAGE_DOWN);
     }
+  }
+
+  private void registerCustomKeyListener(Command command, Key key) {
+    registrations.add(terminal.addCustomKeyListener(ev -> {
+      setCurrentLine(ev.getEventData().getString(ITerminalConsole.CURRENT_LINE_DATA));
+      command.execute();
+    }, key).addEventData(ITerminalConsole.CURRENT_LINE_DATA));
   }
 
   /** Gets the enabled state of the history. */
@@ -101,13 +109,11 @@ public class TerminalHistory implements Serializable {
   }
 
   private void handlePageUp() {
-    ((ITerminalConsole) terminal).getCurrentLine().thenApply(this::findPrevious)
-        .thenAccept(this::write);
+    write(findPrevious());
   }
 
   private void handlePageDown() {
-    ((ITerminalConsole) terminal).getCurrentLine().thenApply(this::findNext)
-        .thenAccept(this::write);
+    write(findNext());
   }
 
   private void write(String line) {
@@ -184,13 +190,11 @@ public class TerminalHistory implements Serializable {
     return find(forwardIterator(), line -> true).orElse("");
   }
 
-  private String findPrevious(String currentLine) {
-    setCurrentLine(currentLine);
+  private String findPrevious() {
     return find(reverseIterator(), line -> line.startsWith(prefix)).orElse(null);
   }
 
-  private String findNext(String currentLine) {
-    setCurrentLine(currentLine);
+  private String findNext() {
     return find(forwardIterator(), line -> line.startsWith(prefix)).orElse("");
   }
 

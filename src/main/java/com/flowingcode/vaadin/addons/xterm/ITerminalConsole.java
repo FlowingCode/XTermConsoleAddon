@@ -27,8 +27,6 @@ import com.vaadin.flow.component.DomEvent;
 import com.vaadin.flow.component.EventData;
 import com.vaadin.flow.component.HasElement;
 import com.vaadin.flow.shared.Registration;
-import elemental.json.JsonValue;
-import java.util.concurrent.CompletableFuture;
 import lombok.Getter;
 
 /**
@@ -37,6 +35,21 @@ import lombok.Getter;
  */
 @SuppressWarnings("serial")
 public interface ITerminalConsole extends HasElement {
+
+  /**
+   * Optional data key of the
+   * {@linkplain XTermBase#addCustomKeyListener(com.vaadin.flow.dom.DomEventListener, com.vaadin.flow.component.Key, com.vaadin.flow.component.KeyModifier...)
+   * custom key event} with the text value of the current line.
+   * <p>
+   *
+   * Use:
+   * 
+   * <pre>
+   * terminal.addCustomKeyListener(ev -> { ... }, key)
+   *   .addEventData(ITerminalConsole.CURRENT_LINE_DATA)
+   * </pre>
+   */
+  public static String CURRENT_LINE_DATA = "event.detail.currentLine";
 
   // TODO set cursor properties (blink, style, width) separately for insert and overwrite modes
 
@@ -60,12 +73,6 @@ public interface ITerminalConsole extends HasElement {
   /** Set the insert mode. */
   default void setInsertMode(boolean insertMode) {
     ((XTermBase) this).executeJs("this.insertMode=$0", insertMode);
-  }
-
-  /** Returns the text in the current line */
-  default CompletableFuture<String> getCurrentLine() {
-    return getElement().executeJs("return this.currentLine").toCompletableFuture()
-        .thenApply(JsonValue::asString);
   }
 
 }

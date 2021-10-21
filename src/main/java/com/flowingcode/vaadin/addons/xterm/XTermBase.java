@@ -29,6 +29,7 @@ import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.dom.DomEventListener;
+import com.vaadin.flow.dom.DomListenerRegistration;
 import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.server.Command;
 import com.vaadin.flow.shared.Registration;
@@ -212,8 +213,9 @@ public abstract class XTermBase extends Component
    * {@code null}.
    *
    * @return a registration for the listener.
+   * @see ITerminalConsole#CURRENT_LINE_DATA
    */
-  public Registration addCustomKeyListener(
+  public DomListenerRegistration addCustomKeyListener(
       DomEventListener listener, Key key, KeyModifier... modifiers) {
     return addCustomKeyListener(listener, key, null, modifiers);
   }
@@ -222,14 +224,15 @@ public abstract class XTermBase extends Component
    * Add a server-side key listener.
    *
    * @return a registration for the listener.
+   * @see ITerminalConsole#CURRENT_LINE_DATA
    */
-  public Registration addCustomKeyListener(
+  public DomListenerRegistration addCustomKeyListener(
       DomEventListener listener, Key key, KeyLocation location, KeyModifier... modifiers) {
     return addCustomKeyListener(
         listener, key.getKeys(), location, new HashSet<>(Arrays.asList(modifiers)));
   }
 
-  private Registration addCustomKeyListener(
+  private DomListenerRegistration addCustomKeyListener(
       DomEventListener listener,
       List<String> keys,
       KeyLocation location,
@@ -268,9 +271,9 @@ public abstract class XTermBase extends Component
     }
 
     String filter = sb.toString();
-    Registration r = getElement().addEventListener("CustomKey", listener).setFilter(filter);
+    DomListenerRegistration r = getElement().addEventListener("CustomKey", listener).setFilter(filter);
     executeJs("this.registerCustomKeyListener($0)", json);
-    return r::remove;
+    return r;
   }
 
   @Override

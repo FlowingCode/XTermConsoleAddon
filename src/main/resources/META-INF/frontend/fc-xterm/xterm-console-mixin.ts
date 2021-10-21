@@ -23,7 +23,6 @@ import { TerminalMixin, TerminalAddon } from '@vaadin/flow-frontend/fc-xterm/xte
 interface IConsoleMixin extends TerminalMixin {
 	escapeEnabled: Boolean;
 	insertMode: Boolean;
-	readonly currentLine: string;
 }
 
 class ConsoleAddon extends TerminalAddon<IConsoleMixin> {
@@ -241,9 +240,10 @@ export function XTermConsoleMixin<TBase extends Constructor<TerminalMixin>>(Base
 		}
 	}
 
-	get currentLine() : string {
-		return this._addon.currentLine;
+	_dispatchCustomKeyEvent(detail : any) {
+		detail.currentLine = this._addon.currentLine;
+		super._dispatchCustomKeyEvent(detail);
 	}
-
+	
  }
 }
