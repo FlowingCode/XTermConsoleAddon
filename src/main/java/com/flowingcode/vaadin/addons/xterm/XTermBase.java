@@ -195,7 +195,7 @@ public abstract class XTermBase extends Component
     } else if (deferredCommands == null) {
       return getElement().executeJs(expression, parameters).toCompletableFuture();
     } else {
-      throw new IllegalStateException("Component is not attached");
+      throw new IllegalStateException("Terminal is not initialized");
     }
   }
   
