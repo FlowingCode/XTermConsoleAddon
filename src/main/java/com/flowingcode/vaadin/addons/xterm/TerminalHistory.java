@@ -159,9 +159,9 @@ public class TerminalHistory implements Serializable {
     if (!line.isEmpty()) {
       history.add(Objects.requireNonNull(line));
       iterator = null;
-    }
-    if (maxSize != null && history.size() > maxSize) {
-      history.removeLast();
+      if (maxSize != null && history.size() > maxSize) {
+        history.removeLast();
+      }
     }
   }
 
