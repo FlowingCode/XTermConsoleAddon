@@ -33,6 +33,8 @@ public class TerminalHistory implements Serializable {
 
   private String lastRet;
 
+  private String initialLine;
+
   private Integer maxSize;
 
   protected <T extends XTermBase & ITerminalConsole> TerminalHistory(T terminal) {
@@ -167,6 +169,7 @@ public class TerminalHistory implements Serializable {
 
   private void setCurrentLine(String currentLine) {
     if (!currentLine.equals(lastRet)) {
+      initialLine = currentLine;
       prefix = currentLine;
       iterator = null;
     }
@@ -187,7 +190,7 @@ public class TerminalHistory implements Serializable {
   }
 
   private String next() {
-    return find(forwardIterator(), line -> true).orElse("");
+    return find(forwardIterator(), line -> true).orElse(initialLine);
   }
 
   private String findPrevious() {

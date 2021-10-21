@@ -41,6 +41,27 @@ public class TerminalHistoryIT extends AbstractXTermTest {
   }
 
   @Test
+  public void testArrowKeysAndRestore() {
+    TestBenchElement term = $("fc-xterm").first();
+
+    WebElement input = (WebElement) waitUntil(driver -> ((HasTestBenchCommandExecutor) driver)
+        .getCommandExecutor().executeScript("return arguments[0].terminal.textarea", term));
+
+    int y = cursorPosition(term).y;
+    input.sendKeys("foo1\nfoo2\n");
+
+    assertThat(cursorPosition(term), is(at(0, y += 2)));
+    assertThat(lineAtOffset(term, 0), isEmptyString());
+
+    input.sendKeys("bar");
+    input.sendKeys(Keys.ARROW_UP);
+    assertThat(currentLine(term), is("foo2"));
+
+    input.sendKeys(Keys.ARROW_DOWN);
+    assertThat(currentLine(term), is("bar"));
+  }
+
+  @Test
   public void testPageUpDown() {
     TestBenchElement term = $("fc-xterm").first();
 
