@@ -155,13 +155,7 @@ export class XTermElement extends LitElement implements TerminalMixin {
       this.customKeyEventHandlers.handle(this, ev);
       if (ev.cancelBubble) return false;
       
-      if (ev.key==' ') {
-          term.write(' ');
-          return false;
-      } else {
-          return true;
-      }
- 
+      return true; 
     });   
   }
  
