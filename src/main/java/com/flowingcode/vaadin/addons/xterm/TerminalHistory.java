@@ -28,8 +28,6 @@ public class TerminalHistory implements Serializable {
 
   private List<Registration> registrations;
 
-  private String prefix;
-
   private String lastRet;
 
   private String initialLine;
@@ -84,8 +82,6 @@ public class TerminalHistory implements Serializable {
       registrations.add(((ITerminalConsole) terminal).addLineListener(ev -> add(ev.getLine())));
       registrations.add(terminal.addCustomKeyListener(ev -> handleArrowUp(), Key.ARROW_UP));
       registrations.add(terminal.addCustomKeyListener(ev -> handleArrowDown(), Key.ARROW_DOWN));
-      registrations.add(terminal.addCustomKeyListener(ev -> handlePageUp(), Key.PAGE_UP));
-      registrations.add(terminal.addCustomKeyListener(ev -> handlePageDown(), Key.PAGE_DOWN));
     }
   }
 
@@ -109,15 +105,6 @@ public class TerminalHistory implements Serializable {
     write(next());
   }
 
-  private void handlePageUp() {
-    ((ITerminalConsole) terminal).getCurrentLine().thenApply(this::findPrevious)
-        .thenAccept(this::write);
-  }
-
-  private void handlePageDown() {
-    ((ITerminalConsole) terminal).getCurrentLine().thenApply(this::findNext)
-        .thenAccept(this::write);
-  }
 
   private void write(String line) {
     if (line != null) {
@@ -168,14 +155,6 @@ public class TerminalHistory implements Serializable {
     }
   }
 
-  private void setCurrentLine(String currentLine) {
-    if (!currentLine.equals(lastRet)) {
-      initialLine = currentLine;
-      prefix = currentLine;
-      iterator = null;
-    }
-  }
-
   private Optional<String> find(Iterator<String> iterator, Predicate<String> predicate) {
     while (iterator.hasNext()) {
       String line = iterator.next();
@@ -196,16 +175,6 @@ public class TerminalHistory implements Serializable {
       initialLine = null;
       return result;
     });
-  }
-
-  private String findPrevious(String currentLine) {
-    setCurrentLine(currentLine);
-    return find(reverseIterator(), line -> line.startsWith(prefix)).orElse(null);
-  }
-
-  private String findNext(String currentLine) {
-    setCurrentLine(currentLine);
-    return find(forwardIterator(), line -> line.startsWith(prefix)).orElse("");
   }
 
   /** Clears the history. */

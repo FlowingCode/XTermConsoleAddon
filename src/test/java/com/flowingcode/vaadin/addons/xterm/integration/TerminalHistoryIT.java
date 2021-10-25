@@ -61,40 +61,4 @@ public class TerminalHistoryIT extends AbstractXTermTest {
     assertThat(currentLine(term), is("bar"));
   }
 
-  @Test
-  public void testPageUpDown() {
-    TestBenchElement term = $("fc-xterm").first();
-
-    WebElement input = (WebElement) waitUntil(driver -> ((HasTestBenchCommandExecutor) driver)
-        .getCommandExecutor().executeScript("return arguments[0].terminal.textarea", term));
-
-    int y = cursorPosition(term).y;
-    input.sendKeys("foo1\nfoo2\nbar1\nfoo3\n");
-
-    assertThat(cursorPosition(term), is(at(0, y += 4)));
-    assertThat(lineAtOffset(term, 0), isEmptyString());
-
-    input.sendKeys("f", Keys.PAGE_UP);
-    assertThat(currentLine(term), is("foo3"));
-
-    input.sendKeys(Keys.PAGE_UP);
-    assertThat(currentLine(term), is("foo2"));
-
-    input.sendKeys(Keys.PAGE_UP);
-    assertThat(currentLine(term), is("foo1"));
-
-    input.sendKeys(Keys.PAGE_UP);
-    assertThat(currentLine(term), is("foo1"));
-
-    input.sendKeys(Keys.PAGE_DOWN);
-    assertThat(currentLine(term), is("foo2"));
-
-    input.sendKeys(Keys.PAGE_DOWN);
-    assertThat(currentLine(term), is("foo3"));
-
-    input.sendKeys(Keys.PAGE_DOWN);
-    assertThat(currentLine(term), isEmptyString());
-
-  }
-
 }
