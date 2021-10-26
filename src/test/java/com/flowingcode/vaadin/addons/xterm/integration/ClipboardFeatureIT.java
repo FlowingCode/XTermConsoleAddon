@@ -21,25 +21,29 @@ package com.flowingcode.vaadin.addons.xterm.integration;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import com.vaadin.testbench.TestBenchElement;
+import java.util.List;
 import org.junit.Test;
 import org.openqa.selenium.interactions.Actions;
 
-public class ClipboardFeatureIT extends AbstractXTermTest {
+public class ClipboardFeatureIT extends AbstractViewTest {
+
+  private static int[] intArray(Object obj) {
+    return ((List<?>) obj).stream().mapToInt(i -> ((Long) i).intValue()).toArray();
+  }
 
   @Test
   public void testFeature() {
-    TestBenchElement term = $("fc-xterm").first();
+    XTermElement term = $(XTermElement.class).first();
 
-    write(term, "\\x1bcTEXT");
+    term.write("\\x1bcTEXT");
 
     int[] size =
         intArray(
             getCommandExecutor()
                 .executeScript(
                     "return [arguments[0].clientWidth, arguments[0].clientHeight]", term));
-    getCommandExecutor()
-        .executeScript("arguments[0].useSystemClipboard='false'", $("fc-xterm").first());
+
+    term.setUseSystemClipboard(false);
 
     new Actions(driver)
         .moveToElement(term, -size[0] / 2, -size[1] / 2 + 10)
@@ -49,6 +53,6 @@ public class ClipboardFeatureIT extends AbstractXTermTest {
         .perform();
 
     new Actions(driver).contextClick().perform();
-    assertThat(currentLine(term), is("TEXTTEXT"));
+    assertThat(term.currentLine(), is("TEXTTEXT"));
   }
 }

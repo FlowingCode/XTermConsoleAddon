@@ -19,19 +19,18 @@
  */
 package com.flowingcode.vaadin.addons.xterm.integration;
 
+import static com.flowingcode.vaadin.addons.xterm.integration.Position.at;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
-import com.vaadin.testbench.HasTestBenchCommandExecutor;
 import com.vaadin.testbench.TestBenchElement;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 
-public class XTermIT extends AbstractXTermTest {
+public class XTermIT extends AbstractViewTest {
 
   private Matcher<TestBenchElement> hasBeenUpgradedToCustomElement =
       new TypeSafeDiagnosingMatcher<TestBenchElement>() {
@@ -44,9 +43,12 @@ public class XTermIT extends AbstractXTermTest {
         @Override
         protected boolean matchesSafely(TestBenchElement item, Description mismatchDescription) {
           String script = "let s=arguments[0].shadowRoot; return !!(s&&s.childElementCount)";
-          if (!item.getTagName().contains("-")) return true;
-          if ((Boolean) item.getCommandExecutor().executeScript(script, item)) return true;
-          else {
+          if (!item.getTagName().contains("-")) {
+            return true;
+          }
+          if ((Boolean) item.getCommandExecutor().executeScript(script, item)) {
+            return true;
+          } else {
             mismatchDescription.appendText(item.getTagName() + " ");
             mismatchDescription.appendDescriptionOf(is(not(this)));
             return false;
@@ -64,27 +66,24 @@ public class XTermIT extends AbstractXTermTest {
 
   @Test
   public void writeText() throws InterruptedException {
-    TestBenchElement term = $("fc-xterm").first();
+    XTermElement term = $(XTermElement.class).first();
 
-    WebElement input = (WebElement) waitUntil(driver -> ((HasTestBenchCommandExecutor) driver)
-        .getCommandExecutor().executeScript("return arguments[0].terminal.textarea", term));
+    int y = term.cursorPosition().y;
 
-    int y = cursorPosition(term).y;
+    term.sendKeys("HELLO");
+    assertThat(term.currentLine(), is("HELLO"));
+    assertThat(term.cursorPosition(), is(at(5, y)));
 
-    input.sendKeys("HELLO");
-    assertThat(currentLine(term), is("HELLO"));
-    assertThat(cursorPosition(term), is(at(5, y)));
+    term.sendKeys("HELLO");
+    assertThat(term.currentLine(), is("HELLOHELLO"));
+    assertThat(term.cursorPosition(), is(at(10, y)));
 
-    input.sendKeys("HELLO");
-    assertThat(currentLine(term), is("HELLOHELLO"));
-    assertThat(cursorPosition(term), is(at(10, y)));
+    term.sendKeys("\n");
+    assertThat(term.currentLine(), is(""));
+    assertThat(term.cursorPosition(), is(at(0, ++y)));
 
-    input.sendKeys("\n");
-    assertThat(currentLine(term), is(""));
-    assertThat(cursorPosition(term), is(at(0, ++y)));
-
-    input.sendKeys("HELLO\nWORLD");
-    assertThat(currentLine(term), is("WORLD"));
-    assertThat(cursorPosition(term), is(at(5, ++y)));
+    term.sendKeys("HELLO\nWORLD");
+    assertThat(term.currentLine(), is("WORLD"));
+    assertThat(term.cursorPosition(), is(at(5, ++y)));
   }
 }

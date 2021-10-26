@@ -28,4 +28,9 @@ import lombok.ToString;
 @EqualsAndHashCode
 class Position {
   int x, y;
+  
+  static Position at(int x, int y) {
+    return new Position(x, y);
+  }
+
 }

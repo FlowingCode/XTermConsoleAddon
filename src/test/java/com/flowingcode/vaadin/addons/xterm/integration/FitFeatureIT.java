@@ -21,26 +21,25 @@ package com.flowingcode.vaadin.addons.xterm.integration;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import com.vaadin.testbench.TestBenchElement;
 import org.junit.Test;
 import org.openqa.selenium.Dimension;
 
-public class FitFeatureIT extends AbstractXTermTest {
+public class FitFeatureIT extends AbstractViewTest {
 
   @Test
   public void testFeature() {
-    TestBenchElement term = $("fc-xterm").first();
+    XTermElement term = $(XTermElement.class).first();
 
-    int colsBefore = getColumnWidth(term);
+    int colsBefore = term.getColumnWidth();
     Dimension dimension = getDriver().manage().window().getSize();
 
     getDriver().manage().window().setSize(new Dimension(dimension.width / 2, dimension.height));
-    int colsAfter = getColumnWidth(term);
+    int colsAfter = term.getColumnWidth();
 
     assertTrue(colsAfter * 2 <= colsBefore);
 
     getDriver().manage().window().setSize(dimension);
-    int colsRestored = getColumnWidth(term);
+    int colsRestored = term.getColumnWidth();
     assertEquals(colsBefore, colsRestored);
   }
 }

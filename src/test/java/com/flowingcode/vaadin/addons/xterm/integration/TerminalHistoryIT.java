@@ -1,64 +1,56 @@
 package com.flowingcode.vaadin.addons.xterm.integration;
 
+import static com.flowingcode.vaadin.addons.xterm.integration.Position.at;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isEmptyString;
 import static org.junit.Assert.assertThat;
-import com.vaadin.testbench.HasTestBenchCommandExecutor;
-import com.vaadin.testbench.TestBenchElement;
 import org.junit.Test;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebElement;
 
-public class TerminalHistoryIT extends AbstractXTermTest {
+public class TerminalHistoryIT extends AbstractViewTest {
 
   @Test
   public void testArrowKeys() {
-    TestBenchElement term = $("fc-xterm").first();
+    XTermElement term = $(XTermElement.class).first();
 
-    WebElement input = (WebElement) waitUntil(driver -> ((HasTestBenchCommandExecutor) driver)
-        .getCommandExecutor().executeScript("return arguments[0].terminal.textarea", term));
+    int y = term.cursorPosition().y;
+    term.sendKeys("foo1\nfoo2\n");
 
-    int y = cursorPosition(term).y;
-    input.sendKeys("foo1\nfoo2\n");
+    assertThat(term.cursorPosition(), is(at(0, y += 2)));
+    assertThat(term.lineAtOffset(0), isEmptyString());
 
-    assertThat(cursorPosition(term), is(at(0, y += 2)));
-    assertThat(lineAtOffset(term, 0), isEmptyString());
+    term.sendKeys(Keys.ARROW_UP);
+    assertThat(term.currentLine(), is("foo2"));
 
-    input.sendKeys(Keys.ARROW_UP);
-    assertThat(currentLine(term), is("foo2"));
+    term.sendKeys(Keys.ARROW_UP);
+    assertThat(term.currentLine(), is("foo1"));
 
-    input.sendKeys(Keys.ARROW_UP);
-    assertThat(currentLine(term), is("foo1"));
+    term.sendKeys(Keys.ARROW_UP);
+    assertThat(term.currentLine(), is("foo1"));
 
-    input.sendKeys(Keys.ARROW_UP);
-    assertThat(currentLine(term), is("foo1"));
+    term.sendKeys(Keys.ARROW_DOWN);
+    assertThat(term.currentLine(), is("foo2"));
 
-    input.sendKeys(Keys.ARROW_DOWN);
-    assertThat(currentLine(term), is("foo2"));
-
-    input.sendKeys(Keys.ARROW_DOWN);
-    assertThat(currentLine(term), isEmptyString());
+    term.sendKeys(Keys.ARROW_DOWN);
+    assertThat(term.currentLine(), isEmptyString());
   }
 
   @Test
   public void testArrowKeysAndRestore() {
-    TestBenchElement term = $("fc-xterm").first();
+    XTermElement term = $(XTermElement.class).first();
 
-    WebElement input = (WebElement) waitUntil(driver -> ((HasTestBenchCommandExecutor) driver)
-        .getCommandExecutor().executeScript("return arguments[0].terminal.textarea", term));
+    int y = term.cursorPosition().y;
+    term.sendKeys("foo1\nfoo2\n");
 
-    int y = cursorPosition(term).y;
-    input.sendKeys("foo1\nfoo2\n");
+    assertThat(term.cursorPosition(), is(at(0, y += 2)));
+    assertThat(term.lineAtOffset(0), isEmptyString());
 
-    assertThat(cursorPosition(term), is(at(0, y += 2)));
-    assertThat(lineAtOffset(term, 0), isEmptyString());
+    term.sendKeys("bar");
+    term.sendKeys(Keys.ARROW_UP);
+    assertThat(term.currentLine(), is("foo2"));
 
-    input.sendKeys("bar");
-    input.sendKeys(Keys.ARROW_UP);
-    assertThat(currentLine(term), is("foo2"));
-
-    input.sendKeys(Keys.ARROW_DOWN);
-    assertThat(currentLine(term), is("bar"));
+    term.sendKeys(Keys.ARROW_DOWN);
+    assertThat(term.currentLine(), is("bar"));
   }
 
 }

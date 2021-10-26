@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,93 +19,89 @@
  */
 package com.flowingcode.vaadin.addons.xterm.integration;
 
+import static com.flowingcode.vaadin.addons.xterm.integration.Position.at;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isEmptyString;
 import static org.junit.Assert.assertThat;
-import com.vaadin.testbench.TestBenchElement;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebElement;
 
-public class ConsoleFeatureIT extends AbstractXTermTest {
+public class ConsoleFeatureIT extends AbstractViewTest {
 
   @Test
   public void testFeature() throws InterruptedException {
-    TestBenchElement term = $("fc-xterm").first();
+    XTermElement term = $(XTermElement.class).first();
 
-    WebElement input =
-        (WebElement) getCommandExecutor().executeScript("return document.activeElement");
+    int y = term.cursorPosition().y;
 
-    int y = cursorPosition(term).y;
+    term.sendKeys("HELLO");
+    assertThat(term.currentLine(), is("HELLO"));
+    assertThat(term.cursorPosition(), is(at(5, y)));
 
-    input.sendKeys("HELLO");
-    assertThat(currentLine(term), is("HELLO"));
-    assertThat(cursorPosition(term), is(at(5, y)));
+    term.sendKeys(Keys.ARROW_LEFT);
+    assertThat(term.cursorPosition(), is(at(4, y)));
 
-    input.sendKeys(Keys.ARROW_LEFT);
-    assertThat(cursorPosition(term), is(at(4, y)));
+    term.sendKeys(Keys.ARROW_RIGHT);
+    assertThat(term.cursorPosition(), is(at(5, y)));
 
-    input.sendKeys(Keys.ARROW_RIGHT);
-    assertThat(cursorPosition(term), is(at(5, y)));
+    term.sendKeys(Keys.HOME);
+    assertThat(term.cursorPosition(), is(at(0, y)));
 
-    input.sendKeys(Keys.HOME);
-    assertThat(cursorPosition(term), is(at(0, y)));
+    term.sendKeys(Keys.END);
+    assertThat(term.cursorPosition(), is(at(5, y)));
 
-    input.sendKeys(Keys.END);
-    assertThat(cursorPosition(term), is(at(5, y)));
+    term.sendKeys(Keys.BACK_SPACE);
+    assertThat(term.currentLine(), is("HELL"));
+    assertThat(term.cursorPosition(), is(at(4, y)));
 
-    input.sendKeys(Keys.BACK_SPACE);
-    assertThat(currentLine(term), is("HELL"));
-    assertThat(cursorPosition(term), is(at(4, y)));
+    term.sendKeys(Keys.HOME, Keys.DELETE);
+    assertThat(term.currentLine(), is("ELL"));
+    assertThat(term.cursorPosition(), is(at(0, y)));
 
-    input.sendKeys(Keys.HOME, Keys.DELETE);
-    assertThat(currentLine(term), is("ELL"));
-    assertThat(cursorPosition(term), is(at(0, y)));
+    term.sendKeys("A");
+    assertThat(term.currentLine(), is("AELL"));
 
-    input.sendKeys("A");
-    assertThat(currentLine(term), is("AELL"));
+    term.sendKeys(Keys.INSERT, "B");
+    assertThat(term.currentLine(), is("ABLL"));
 
-    input.sendKeys(Keys.INSERT, "B");
-    assertThat(currentLine(term), is("ABLL"));
-
-    input.sendKeys(Keys.INSERT, "C");
-    assertThat(currentLine(term), is("ABCLL"));
+    term.sendKeys(Keys.INSERT, "C");
+    assertThat(term.currentLine(), is("ABCLL"));
 
     // long line
 
-    int cols = getColumnWidth(term);
+    int cols = term.getColumnWidth();
     String text = StringUtils.repeat("0123456789", cols / 10 + 1).substring(0, cols);
 
-    input.sendKeys("\n");
-    assertThat(currentLine(term), is(""));
-    assertThat(cursorPosition(term), is(at(0, ++y)));
+    term.sendKeys("\n");
+    assertThat(term.currentLine(), is(""));
+    assertThat(term.cursorPosition(), is(at(0, ++y)));
 
-    input.sendKeys(text);
-    input.sendKeys(Keys.HOME);
-    assertThat(cursorPosition(term), is(at(0, y)));
-    assertThat(currentLine(term), is(text));
+    term.sendKeys(text);
+    term.sendKeys(Keys.HOME);
+    assertThat(term.cursorPosition(), is(at(0, y)));
+    assertThat(term.currentLine(), is(text));
 
-    input.sendKeys("A");
-    assertThat(currentLine(term), is("A" + text.substring(0, cols - 1)));
-    assertThat(lineAtOffset(term, +1), is(text.substring(cols - 1)));
+    term.sendKeys("A");
+    assertThat(term.currentLine(), is("A" + text.substring(0, cols - 1)));
+    assertThat(term.lineAtOffset(+1), is(text.substring(cols - 1)));
 
-    input.sendKeys("B");
-    assertThat(currentLine(term), is("AB" + text.substring(0, cols - 2)));
-    assertThat(lineAtOffset(term, +1), is(text.substring(cols - 2)));
+    term.sendKeys("B");
+    assertThat(term.currentLine(), is("AB" + text.substring(0, cols - 2)));
+    assertThat(term.lineAtOffset(+1), is(text.substring(cols - 2)));
 
-    input.sendKeys(Keys.END);
-    assertThat(cursorPosition(term), is(at(2, y + 1)));
+    term.sendKeys(Keys.END);
+    assertThat(term.cursorPosition(), is(at(2, y + 1)));
 
-    input.sendKeys(Keys.HOME);
-    assertThat(cursorPosition(term), is(at(0, y)));
+    term.sendKeys(Keys.HOME);
+    assertThat(term.cursorPosition(), is(at(0, y)));
 
-    input.sendKeys(Keys.DELETE);
-    assertThat(currentLine(term), is("B" + text.substring(0, cols - 1)));
-    assertThat(lineAtOffset(term, +1), is(text.substring(cols - 1)));
+    term.sendKeys(Keys.DELETE);
+    assertThat(term.currentLine(), is("B" + text.substring(0, cols - 1)));
+    assertThat(term.lineAtOffset(+1), is(text.substring(cols - 1)));
 
-    input.sendKeys(Keys.DELETE);
-    assertThat(currentLine(term), is(text));
-    assertThat(lineAtOffset(term, +1), isEmptyString());
+    term.sendKeys(Keys.DELETE);
+    assertThat(term.currentLine(), is(text));
+    assertThat(term.lineAtOffset(+1), isEmptyString());
   }
 }
