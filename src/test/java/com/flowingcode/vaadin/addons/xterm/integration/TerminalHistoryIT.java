@@ -1,6 +1,5 @@
 package com.flowingcode.vaadin.addons.xterm.integration;
 
-import static com.flowingcode.vaadin.addons.xterm.integration.Position.at;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isEmptyString;
 import static org.junit.Assert.assertThat;
@@ -13,10 +12,10 @@ public class TerminalHistoryIT extends AbstractViewTest {
   public void testArrowKeys() {
     XTermElement term = $(XTermElement.class).first();
 
-    int y = term.cursorPosition().y;
+    Position pos = term.cursorPosition();
     term.sendKeys("foo1\nfoo2\n");
 
-    assertThat(term.cursorPosition(), is(at(0, y += 2)));
+    assertThat(term.cursorPosition(), is(pos.advance(0, 2)));
     assertThat(term.lineAtOffset(0), isEmptyString());
 
     term.sendKeys(Keys.ARROW_UP);
@@ -39,10 +38,10 @@ public class TerminalHistoryIT extends AbstractViewTest {
   public void testArrowKeysAndRestore() {
     XTermElement term = $(XTermElement.class).first();
 
-    int y = term.cursorPosition().y;
+    Position pos = term.cursorPosition();
     term.sendKeys("foo1\nfoo2\n");
 
-    assertThat(term.cursorPosition(), is(at(0, y += 2)));
+    assertThat(term.cursorPosition(), is(pos.advance(0, 2)));
     assertThat(term.lineAtOffset(0), isEmptyString());
 
     term.sendKeys("bar");

@@ -29,8 +29,16 @@ import lombok.ToString;
 class Position {
   int x, y;
   
-  static Position at(int x, int y) {
-    return new Position(x, y);
+  /**Increments the position by <code>dx,dy</code>.*/
+  public Position advance(int dx, int dy) {
+    this.x+=dx;
+    this.y+=dy;
+    return this;
   }
 
+  /**Return a new position that is equal to this position plus <code>dx,dy</code>.*/
+  public Position plus(int dx, int dy) {
+    return new Position(this.x+dx, this.y+dy);
+  }
+  
 }
