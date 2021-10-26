@@ -19,7 +19,6 @@
  */
 package com.flowingcode.vaadin.addons.xterm.integration;
 
-import static com.flowingcode.vaadin.addons.xterm.integration.Position.at;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
@@ -68,22 +67,22 @@ public class XTermIT extends AbstractViewTest {
   public void writeText() throws InterruptedException {
     XTermElement term = $(XTermElement.class).first();
 
-    int y = term.cursorPosition().y;
+    Position pos = term.cursorPosition();
 
     term.sendKeys("HELLO");
     assertThat(term.currentLine(), is("HELLO"));
-    assertThat(term.cursorPosition(), is(at(5, y)));
+    assertThat(term.cursorPosition(), is(pos.plus(5, 0)));
 
     term.sendKeys("HELLO");
     assertThat(term.currentLine(), is("HELLOHELLO"));
-    assertThat(term.cursorPosition(), is(at(10, y)));
+    assertThat(term.cursorPosition(), is(pos.plus(10, 0)));
 
     term.sendKeys("\n");
     assertThat(term.currentLine(), is(""));
-    assertThat(term.cursorPosition(), is(at(0, ++y)));
+    assertThat(term.cursorPosition(), is(pos.advance(0, 1)));
 
     term.sendKeys("HELLO\nWORLD");
     assertThat(term.currentLine(), is("WORLD"));
-    assertThat(term.cursorPosition(), is(at(5, ++y)));
+    assertThat(term.cursorPosition(), is(pos.advance(0, 1).plus(5, 0)));
   }
 }
