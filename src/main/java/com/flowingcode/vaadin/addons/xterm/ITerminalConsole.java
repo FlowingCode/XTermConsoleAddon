@@ -68,4 +68,14 @@ public interface ITerminalConsole extends HasElement {
         .thenApply(JsonValue::asString);
   }
 
+  /** Sets the command line prompt. */
+  default void setPrompt(String prompt) {
+    getElement().setProperty("prompt", prompt);
+  }
+
+  /** Writes the command line prompt to the terminal. */
+  default void writePrompt() {
+    ((XTermBase) this).executeJs("this.writePrompt()");
+  }
+
 }

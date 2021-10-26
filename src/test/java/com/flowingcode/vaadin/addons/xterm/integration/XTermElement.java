@@ -54,6 +54,10 @@ public class XTermElement extends TestBenchElement {
     setProperty("useSystemClipboard", value);
   }
 
+  public void setPrompt(String value) {
+    setProperty("prompt", value);
+  }
+
   @Override
   public void sendKeys(CharSequence... keysToSend) {
     input.sendKeys(keysToSend);

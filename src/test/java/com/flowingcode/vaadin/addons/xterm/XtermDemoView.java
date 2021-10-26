@@ -44,8 +44,12 @@ public class XtermDemoView extends VerticalLayout {
     getElement().getStyle().set("background", "black");
 
     xterm = new XTerm();
+    xterm.setPrompt("[user@xterm ~]$ ");
+
     xterm.writeln("xterm add-on by Flowing Code S.A.\n\n");
-    xterm.writeln("Commands: time, date, beep, color, history\n");
+    xterm.writeln("Commands: time, date, beep, color, history, prompt\n");
+    xterm.writePrompt();
+
     xterm.setCursorBlink(true);
     xterm.setCursorStyle(CursorStyle.UNDERLINE);
     xterm.setBellStyle(BellStyle.SOUND);
@@ -94,11 +98,23 @@ public class XtermDemoView extends VerticalLayout {
             case "history":
               showHistory();
               break;
+            case "prompt":
+              if (line.length == 1) {
+                xterm.writeln("Write prompt off for disabling the prompt");
+                xterm.writeln("Write prompt <text> for setting the prompt");
+              } else if (line[1].equals("off")) {
+                xterm.setPrompt(null);
+              } else {
+                xterm.setPrompt(line[1].trim() + " ");
+              }
+              break;
             default:
               if (!ev.getLine().trim().isEmpty()) {
                 xterm.writeln("Unknown command: " + line[0]);
               }
           }
+
+          xterm.writePrompt();
         });
 
     xterm.focus();

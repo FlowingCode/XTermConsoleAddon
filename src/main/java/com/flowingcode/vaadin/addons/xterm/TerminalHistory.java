@@ -108,8 +108,9 @@ public class TerminalHistory implements Serializable {
 
   private void write(String line) {
     if (line != null) {
-      // erase logical line, cursor home in logical line
-      terminal.write("\033[<2K\033[<H" + line);
+      // erase logical line, cursor home in logical line, cursor horizontal absolute
+      String prompt = terminal.getElement().getProperty("prompt", "");
+      terminal.write("\033[<2K\033[<H\033[G" + prompt + line);
       lastRet = line;
     }
   }
