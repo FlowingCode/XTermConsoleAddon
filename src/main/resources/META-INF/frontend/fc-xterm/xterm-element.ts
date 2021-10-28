@@ -146,8 +146,10 @@ export class XTermElement extends LitElement implements TerminalMixin {
         term.write(e.replace(/\r/g,'\x1b[<N\n'));
     });
             
-    //https://gist.github.com/xem/670dec8e70815842eb95
-    term.setOption('bellSound','data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU'+Array(500).join('123'));
+    //https://gist.github.com/literallylara/7ece1983fab47365108c47119afb51c7
+    //(C) Lara Sophie Schütt 2016, CC0 
+    for(var i=44100*0.1,d="";i--;)d+=String.fromCharCode(~~((Math.sin(i/44100*2*Math.PI*800)+1)*128)); 
+    term.setOption('bellSound',"data:Audio/WAV;base64,"+btoa("RIFFdataWAVEfmt "+atob("EAAAAAEAAQBErAAARKwAAAEACABkYXRh/////w==")+d));
 
     term.attachCustomKeyEventHandler(ev => {
       if (ev.type!=='keydown') return false;
