@@ -103,4 +103,45 @@ public class ConsoleFeatureIT extends AbstractViewTest {
     assertThat(term.currentLine(), is(text));
     assertThat(term.lineAtOffset(+1), isEmptyString());
   }
+
+  @Test
+  public void testCsiSequences() throws InterruptedException {
+    XTermElement term = $(XTermElement.class).first();
+    Position pos = term.cursorPosition();
+
+    term.sendKeys("HELLO");
+    assertThat(term.currentLine(), is("HELLO"));
+
+    // Cursor Home Logical Line
+    term.write("\u001b[<H");
+    assertThat(term.cursorPosition(), is(pos));
+
+    // Cursor End Logical Line
+    term.write("\u001b[<E");
+    assertThat(term.cursorPosition(), is(pos.plus(5, 0)));
+
+    // Cursor Backward Wrapped
+    term.write("\u001b[<L");
+    assertThat(term.cursorPosition(), is(pos.plus(4, 0)));
+
+    // Cursor Forward Wrapped
+    term.write("\u001b[<R");
+    assertThat(term.cursorPosition(), is(pos.plus(5, 0)));
+
+    // Backspace
+    term.write("\u001b[<B");
+    assertThat(term.cursorPosition(), is(pos.plus(4, 0)));
+    assertThat(term.currentLine(), is("HELL"));
+
+    // Delete Characters Wrapped
+    term.write("\u001b[<H");
+    term.write("\u001b[<D");
+    assertThat(term.cursorPosition(), is(pos));
+    assertThat(term.currentLine(), is("ELL"));
+
+    term.write("\u001b[<2D");
+    assertThat(term.cursorPosition(), is(pos));
+    assertThat(term.currentLine(), is("L"));
+  }
+
 }
