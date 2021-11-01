@@ -30,6 +30,20 @@ class FitAddon extends FitAddonBase {
   _disposables : IDisposable[];
   $ : FitMixin;
     
+  constructor() {
+	super();
+	const super_fit = this.fit.bind(this);
+	this.fit = () => {
+		super_fit();
+		this.__unsetWidth();
+		requestAnimationFrame(()=>this.__unsetWidth());
+	};
+  }
+  
+  __unsetWidth() {
+    (this.$.node.terminal as any)._core.viewport._viewportElement.style.width='unset';
+  }
+
   activate(terminal: Terminal): void {
   	super.activate(terminal);
            
