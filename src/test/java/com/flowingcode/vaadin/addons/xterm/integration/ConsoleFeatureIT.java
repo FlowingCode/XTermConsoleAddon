@@ -28,6 +28,13 @@ import org.openqa.selenium.Keys;
 
 public class ConsoleFeatureIT extends AbstractViewTest {
 
+  /** Returns a line that runs up to the right margin */
+  private String makeFullLine(XTermElement term, boolean hasPrompt) {
+    int cols = term.getColumnWidth();
+    int x = hasPrompt ? term.cursorPosition().x : 0;
+    return StringUtils.repeat("0123456789", cols / 10 + 1).substring(0, cols - x);
+  }
+
   @Test
   public void testFeature() throws InterruptedException {
     XTermElement term = $(XTermElement.class).first();
@@ -67,14 +74,15 @@ public class ConsoleFeatureIT extends AbstractViewTest {
     term.sendKeys(Keys.INSERT, "C");
     assertThat(term.currentLine(), is("ABCLL"));
 
+
     // long line
-
-    int cols = term.getColumnWidth();
-    String text = StringUtils.repeat("0123456789", cols / 10 + 1).substring(0, cols);
-
     term.sendKeys("\n");
     assertThat(term.currentLine(), is(""));
     assertThat(term.cursorPosition(), is(pos.advance(0, 1)));
+
+    String prompt = term.lineAtOffset(0);
+    String text = makeFullLine(term, true);
+    int cols = text.length();
 
     term.sendKeys(text);
     term.sendKeys(Keys.HOME);
@@ -82,26 +90,26 @@ public class ConsoleFeatureIT extends AbstractViewTest {
     assertThat(term.currentLine(), is(text));
 
     term.sendKeys("A");
-    assertThat(term.currentLine(), is("A" + text.substring(0, cols - 1)));
-    assertThat(term.lineAtOffset(+1), is(text.substring(cols - 1)));
+    assertThat(term.lineAtOffset(0), is(prompt + "A" + text.substring(0, cols - 1)));
+    assertThat(term.lineAtOffset(1), is(text.substring(cols - 1)));
 
     term.sendKeys("B");
-    assertThat(term.currentLine(), is("AB" + text.substring(0, cols - 2)));
-    assertThat(term.lineAtOffset(+1), is(text.substring(cols - 2)));
+    assertThat(term.lineAtOffset(0), is(prompt + "AB" + text.substring(0, cols - 2)));
+    assertThat(term.lineAtOffset(1), is(text.substring(cols - 2)));
 
     term.sendKeys(Keys.END);
-    assertThat(term.cursorPosition(), is(pos.plus(2, 1)));
+    assertThat(term.cursorPosition(), is(new Position(2, pos.y + 1)));
 
     term.sendKeys(Keys.HOME);
     assertThat(term.cursorPosition(), is(pos));
 
     term.sendKeys(Keys.DELETE);
-    assertThat(term.currentLine(), is("B" + text.substring(0, cols - 1)));
-    assertThat(term.lineAtOffset(+1), is(text.substring(cols - 1)));
+    assertThat(term.lineAtOffset(0), is(prompt + "B" + text.substring(0, cols - 1)));
+    assertThat(term.lineAtOffset(1), is(text.substring(cols - 1)));
 
     term.sendKeys(Keys.DELETE);
-    assertThat(term.currentLine(), is(text));
-    assertThat(term.lineAtOffset(+1), isEmptyString());
+    assertThat(term.lineAtOffset(0), is(prompt + text));
+    assertThat(term.lineAtOffset(1), isEmptyString());
   }
 
   @Test

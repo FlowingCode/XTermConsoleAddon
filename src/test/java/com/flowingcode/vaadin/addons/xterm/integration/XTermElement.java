@@ -29,14 +29,15 @@ public class XTermElement extends TestBenchElement {
   }
 
   final String currentLine() {
-    return lineAtOffset(0);
+    return getPropertyString("currentLine");
   }
 
   public String lineAtOffset(int offset) {
-    String command =
-        "buffer=arguments[0].terminal._core._inputHandler._bufferService.buffer; return buffer.lines.get(buffer.ybase+buffer.y+(%s)).translateToString()";
-    command = String.format(command, offset);
-    return ((String) executeScript(command, this)).replaceFirst("\\s+$", "");
+    return ((String) executeScript(
+        "buffer=arguments[0].terminal._core._inputHandler._bufferService.buffer;"
+            + "line=buffer.lines.get(buffer.ybase+buffer.y+(arguments[1]));"
+            + "return line.translateToString().substr(0,line.getTrimmedLength());",
+        this, offset));
   }
 
   public Position cursorPosition() {
