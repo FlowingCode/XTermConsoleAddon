@@ -16,7 +16,7 @@ public class TerminalHistoryIT extends AbstractViewTest {
     term.sendKeys("foo1\nfoo2\n");
 
     assertThat(term.cursorPosition(), is(pos.advance(0, 2)));
-    assertThat(term.lineAtOffset(0), isEmptyString());
+    assertThat(term.currentLine(), isEmptyString());
 
     term.sendKeys(Keys.ARROW_UP);
     assertThat(term.currentLine(), is("foo2"));
@@ -42,7 +42,7 @@ public class TerminalHistoryIT extends AbstractViewTest {
     term.sendKeys("foo1\nfoo2\n");
 
     assertThat(term.cursorPosition(), is(pos.advance(0, 2)));
-    assertThat(term.lineAtOffset(0), isEmptyString());
+    assertThat(term.currentLine(), isEmptyString());
 
     term.sendKeys("bar");
     term.sendKeys(Keys.ARROW_UP);

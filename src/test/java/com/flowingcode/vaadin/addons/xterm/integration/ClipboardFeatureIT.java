@@ -35,6 +35,7 @@ public class ClipboardFeatureIT extends AbstractViewTest {
   public void testFeature() {
     XTermElement term = $(XTermElement.class).first();
 
+    term.setPrompt(null);
     term.write("\\x1bcTEXT");
 
     int[] size =
