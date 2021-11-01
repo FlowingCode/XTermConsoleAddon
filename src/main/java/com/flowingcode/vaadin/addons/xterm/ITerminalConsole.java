@@ -73,6 +73,11 @@ public interface ITerminalConsole extends HasElement {
     getElement().setProperty("prompt", prompt);
   }
 
+  /** Returns the command line prompt. */
+  default String getPrompt() {
+    return getElement().getProperty("prompt", "");
+  }
+
   /** Writes the command line prompt to the terminal. */
   default void writePrompt() {
     ((XTermBase) this).executeJs("this.writePrompt()");
