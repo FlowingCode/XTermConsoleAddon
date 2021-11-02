@@ -261,16 +261,16 @@ type Constructor<T = {}> = new (...args: any[]) => T;
 export function XTermConsoleMixin<TBase extends Constructor<TerminalMixin>>(Base: TBase) {
   return class XTermConsoleMixin extends Base implements IConsoleMixin {
 	
-	_addon? : ConsoleAddon; 
+	_consoleAddon? : ConsoleAddon; 
 	escapeEnabled: Boolean;
 	prompt: string;
 	
 	connectedCallback() {
 		super.connectedCallback();
 		
-		this._addon = new ConsoleAddon();
-		this._addon.$=this;
-		this.node.terminal.loadAddon(this._addon);
+		this._consoleAddon = new ConsoleAddon();
+		this._consoleAddon.$=this;
+		this.node.terminal.loadAddon(this._consoleAddon);
 	}
 	
 	get insertMode(): Boolean {
@@ -286,12 +286,12 @@ export function XTermConsoleMixin<TBase extends Constructor<TerminalMixin>>(Base
 	}
 
 	get currentLine() : string {
-		return this._addon.currentLine;
+		return this._consoleAddon.currentLine;
 	}
 
 	writePrompt() {
 		//execute writePrompt with blocking semantics 
-		this.node.terminal.write('', ()=>this._addon.writePrompt());
+		this.node.terminal.write('', ()=>this._consoleAddon.writePrompt());
 	}
 	
  }
