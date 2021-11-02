@@ -178,32 +178,34 @@ class ConsoleAddon extends TerminalAddon<IConsoleMixin> {
 			buffer.y = y;
 		}).bind(inputHandler);
 		
+		let hasModifiers = (ev:KeyboardEvent) => ev.shiftKey || ev.altKey || ev.metaKey || ev.ctrlKey;
+		
 		this._disposables = [
 		terminal.parser.registerCsiHandler({prefix: '<', final: 'H'}, cursorHome),	
-		this.$node.customKeyEventHandlers.register(ev=> ev.key=='Home', ()=> terminal.write('\x1b[<H')),
+		this.$node.customKeyEventHandlers.register(ev=> ev.key=='Home' && !hasModifiers(ev), ()=> terminal.write('\x1b[<H')),
 		
 		terminal.parser.registerCsiHandler({prefix: '<', final: 'E'}, cursorEnd),
-		this.$node.customKeyEventHandlers.register(ev=> ev.key=='End', ()=> terminal.write('\x1b[<E')),
+		this.$node.customKeyEventHandlers.register(ev=> ev.key=='End' && !hasModifiers(ev), ()=> terminal.write('\x1b[<E')),
 		
 		terminal.parser.registerCsiHandler({prefix: '<', final: 'L'}, cursorBackwardWrapped),
-		this.$node.customKeyEventHandlers.register(ev=> ev.key=='ArrowLeft', ()=> terminal.write('\x1b[<L')),
+		this.$node.customKeyEventHandlers.register(ev=> ev.key=='ArrowLeft' && !hasModifiers(ev), ()=> terminal.write('\x1b[<L')),
 		
 		terminal.parser.registerCsiHandler({prefix: '<', final: 'R'}, cursorForwardWrapped),
-		this.$node.customKeyEventHandlers.register(ev=> ev.key=='ArrowRight', ()=> terminal.write('\x1b[<R')),
+		this.$node.customKeyEventHandlers.register(ev=> ev.key=='ArrowRight' && !hasModifiers(ev), ()=> terminal.write('\x1b[<R')),
 		
 		terminal.parser.registerCsiHandler({prefix: '<', final: 'B'}, backspace),
-		this.$node.customKeyEventHandlers.register(ev=> ev.key=='Backspace', ()=> terminal.write('\x1b[<B')),
+		this.$node.customKeyEventHandlers.register(ev=> ev.key=='Backspace' && !hasModifiers(ev), ()=> terminal.write('\x1b[<B')),
 		
 		terminal.parser.registerCsiHandler({prefix: '<', final: 'D'}, deleteChar),
-		this.$node.customKeyEventHandlers.register(ev=> ev.key=='Delete', ()=> terminal.write('\x1b[<D')),
+		this.$node.customKeyEventHandlers.register(ev=> ev.key=='Delete' && !hasModifiers(ev), ()=> terminal.write('\x1b[<D')),
 		
 		terminal.parser.registerCsiHandler({prefix: '<', final: 'K'}, eraseInLine),
 		
-		this.$node.customKeyEventHandlers.register(ev=> ev.key=='Insert', ev=>{
+		this.$node.customKeyEventHandlers.register(ev=> ev.key=='Insert' && !hasModifiers(ev), ev=>{
 			this.$.insertMode = !this.$.insertMode;
 		}),
 		
-		this.$node.customKeyEventHandlers.register(ev=> ev.key=='Enter', ()=>{
+		this.$node.customKeyEventHandlers.register(ev=> ev.key=='Enter' && !hasModifiers(ev), ()=>{
 			terminal.write('\x1b[<N\n');
 		}),
 		
