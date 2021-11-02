@@ -239,7 +239,6 @@ class ConsoleAddon extends TerminalAddon<IConsoleMixin> {
 		let prepare = "";
 		let restore = this.$.insertMode ? "\x1b[4h" : "\x1b[4l"
 		
-		console.error(this.__yPrompt+" "+range.first+" "+buffer.y+" "+buffer.ybase);
 		if (this.__yPrompt == range.first) {
 			//prompt has been written in this line
 			prepare+="\x1b[4l"; //Override mode
