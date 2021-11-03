@@ -21,6 +21,7 @@ package com.flowingcode.vaadin.addons.xterm.integration;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import com.vaadin.testbench.TestBenchElement;
 import org.hamcrest.Description;
@@ -85,4 +86,109 @@ public class XTermIT extends AbstractViewTest {
     assertThat(term.currentLine(), is("WORLD"));
     assertThat(term.cursorPosition(), is(pos.advance(0, 1).plus(5, 0)));
   }
+
+  private Integer getKeyCount() {
+    return ((Long)getCommandExecutor().executeScript("return keyCount")).intValue();
+  }
+
+  @Test
+  public void customKeyHandlerLowLevel() throws InterruptedException {
+    XTermElement term = $(XTermElement.class).first();
+    term.executeScript("window.keyCount=0");
+
+    // register an event handler
+    term.executeScript(
+        "r1=this.customKeyEventHandlers.register(ev=> ev.key=='E', ev=>++keyCount)");
+    assertThat(getKeyCount(), is(0));
+
+    // fire it
+    term.sendKeys("E");
+    assertThat(term.currentLine(), is("E"));
+    assertThat(getKeyCount(), is(1));
+
+    // register another event handler for the same key
+    term.executeScript(
+        "r2=this.customKeyEventHandlers.register(ev=> ev.key=='E', ev=>++keyCount)");
+
+    // fire it: increment is performed twice (by each handler)
+    term.sendKeys("E");
+    assertThat(term.currentLine(), is("EE"));
+    assertThat(getKeyCount(), is(3));
+
+    // deregister
+    term.executeScript("r1.dispose()");
+    term.sendKeys("E");
+    assertThat(getKeyCount(), is(4));
+
+    term.executeScript("r2.dispose()");
+    term.sendKeys("E");
+    assertThat(getKeyCount(), is(4));
+  }
+
+  @Test
+  public void customKeyHandlerRegistrationOrder() throws InterruptedException {
+    // assert that custom key handlers are processed in registration order
+    XTermElement term = $(XTermElement.class).first();
+    term.executeScript("window.keyCount=0");
+
+    term.executeScript(
+        "r1=this.customKeyEventHandlers.register(ev=> ev.key=='E', ev=>keyCount=keyCount*10+1)");
+    term.executeScript(
+        "r2=this.customKeyEventHandlers.register(ev=> ev.key=='E', ev=>keyCount=keyCount*10+2)");
+    term.sendKeys("E");
+    assertThat(getKeyCount(), is(12));
+    term.executeScript("r1.dispose()");
+    term.executeScript("r2.dispose()");
+  }
+
+  @Test
+  public void customKeyHandlerStopImmediatePropagation() throws InterruptedException {
+    // since custom key handlers are processed in registration order
+    // then r2 will prevent the processing of r3
+    XTermElement term = $(XTermElement.class).first();
+    term.executeScript("window.keyCount=0");
+
+    term.executeScript(
+        "r1=this.customKeyEventHandlers.register(ev=> ev.key=='E', ev=>keyCount=keyCount*10+1)");
+    term.executeScript(
+        "r2=this.customKeyEventHandlers.register(ev=> ev.key=='E', ev=>ev.stopImmediatePropagation())");
+    term.executeScript(
+        "r3=this.customKeyEventHandlers.register(ev=> ev.key=='E', ev=>keyCount=keyCount*10+3)");
+    term.sendKeys("E");
+    assertThat(getKeyCount(), is(1));
+    term.executeScript("r1.dispose()");
+    term.executeScript("r2.dispose()");
+    term.executeScript("r3.dispose()");
+  }
+
+  @Test
+  public void customKeyHandlerHighLevel() throws InterruptedException {
+    XTermElement term = $(XTermElement.class).first();
+    term.executeScript("window.keyCount=0");
+
+    // register interest on CustomKey event
+    Long id1 = (Long) term.executeScript("return this.registerCustomKeyListener({key:'E'})");
+    term.executeScript("this.addEventListener('CustomKey', ()=>++keyCount)");
+    assertThat(id1, is(notNullValue()));
+    term.sendKeys("E");
+    assertThat(getKeyCount(), is(1));
+
+    // register interest again on CustomKey event for the same key
+    // increment is performed by the CustomKey listener, which is called once
+    Long id2 = (Long) term.executeScript("return this.registerCustomKeyListener({key:'E'})");
+    assertThat(id2, is(notNullValue()));
+    assertThat(id2, is(not(id1)));
+    term.sendKeys("E");
+    assertThat(getKeyCount(), is(2));
+
+    // deregister
+    term.executeScript("this.customKeyEventHandlers.remove(arguments[0])", id1);
+    term.sendKeys("E");
+    assertThat(getKeyCount(), is(3));
+
+    term.executeScript("this.customKeyEventHandlers.remove(arguments[0])", id2);
+    term.sendKeys("E");
+    assertThat(getKeyCount(), is(3));
+  }
+
 }
