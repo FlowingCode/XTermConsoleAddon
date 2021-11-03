@@ -34,12 +34,21 @@ public class FitFeatureIT extends AbstractViewTest {
     Dimension dimension = getDriver().manage().window().getSize();
 
     getDriver().manage().window().setSize(new Dimension(dimension.width / 2, dimension.height));
-    int colsAfter = term.getColumnWidth();
+
+    Integer colsAfter = waitUntil(driver -> {
+      int w = term.getColumnWidth();
+      return w != colsBefore ? w : null;
+    });
 
     assertTrue(colsAfter * 2 <= colsBefore);
 
     getDriver().manage().window().setSize(dimension);
-    int colsRestored = term.getColumnWidth();
+
+    int colsRestored = waitUntil(driver -> {
+      int w = term.getColumnWidth();
+      return w != colsAfter ? w : null;
+    });
+
     assertEquals(colsBefore, colsRestored);
   }
 }
