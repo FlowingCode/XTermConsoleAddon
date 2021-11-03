@@ -19,8 +19,9 @@
  */
 package com.flowingcode.vaadin.addons.xterm.integration;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.openqa.selenium.Dimension;
 
@@ -40,7 +41,7 @@ public class FitFeatureIT extends AbstractViewTest {
       return w != colsBefore ? w : null;
     });
 
-    assertTrue(colsAfter * 2 <= colsBefore);
+    assertThat(colsAfter * 2, is(lessThanOrEqualTo(colsBefore)));
 
     getDriver().manage().window().setSize(dimension);
 
@@ -49,6 +50,6 @@ public class FitFeatureIT extends AbstractViewTest {
       return w != colsAfter ? w : null;
     });
 
-    assertEquals(colsBefore, colsRestored);
+    assertThat(colsRestored, is(colsBefore));
   }
 }
