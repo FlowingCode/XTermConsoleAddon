@@ -40,9 +40,9 @@ public class ClipboardFeatureIT extends AbstractViewTest {
 
     int[] size =
         intArray(
-            getCommandExecutor()
+            term
                 .executeScript(
-                    "return [arguments[0].clientWidth, arguments[0].clientHeight]", term));
+                    "return [this.clientWidth, this.clientHeight]"));
 
     term.setUseSystemClipboard(false);
 

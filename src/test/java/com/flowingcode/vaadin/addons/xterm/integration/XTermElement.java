@@ -3,6 +3,7 @@ package com.flowingcode.vaadin.addons.xterm.integration;
 import com.vaadin.testbench.TestBenchElement;
 import com.vaadin.testbench.commands.TestBenchCommandExecutor;
 import com.vaadin.testbench.elementsbase.Element;
+import java.util.Arrays;
 import java.util.List;
 import org.openqa.selenium.WebElement;
 
@@ -18,14 +19,14 @@ public class XTermElement extends TestBenchElement {
   protected void init(WebElement element, TestBenchCommandExecutor commandExecutor) {
     super.init(element, commandExecutor);
     input = (WebElement) waitUntil(
-        driver -> executeScript("return arguments[0].terminal.textarea", this));
+        driver -> executeScript("return this.terminal.textarea"));
   }
   public void write(String text) {
-    executeScript(String.format("arguments[0].terminal.write('%s')", text), this);
+    executeScript(String.format("this.terminal.write('%s')", text));
   }
 
   public int getColumnWidth() {
-    return ((Long) executeScript("return arguments[0].terminal.cols", this)).intValue();
+    return ((Long) executeScript("return this.terminal.cols")).intValue();
   }
 
   final String currentLine() {
@@ -34,15 +35,15 @@ public class XTermElement extends TestBenchElement {
 
   public String lineAtOffset(int offset) {
     return ((String) executeScript(
-        "buffer=arguments[0].terminal._core._inputHandler._bufferService.buffer;"
-            + "line=buffer.lines.get(buffer.ybase+buffer.y+(arguments[1]));"
+        "buffer=this.terminal._core._inputHandler._bufferService.buffer;"
+            + "line=buffer.lines.get(buffer.ybase+buffer.y+(arguments[0]));"
             + "return line.translateToString().substr(0,line.getTrimmedLength());",
-        this, offset));
+        offset));
   }
 
   public Position cursorPosition() {
     int[] pos = intArray(executeScript(
-        "buffer=arguments[0].terminal.buffer.active; return [buffer.cursorX, buffer.cursorY]",
+        "buffer=this.terminal.buffer.active; return [buffer.cursorX, buffer.cursorY]",
         this));
     return new Position(pos[0], pos[1]);
   }
@@ -63,4 +64,15 @@ public class XTermElement extends TestBenchElement {
   public void sendKeys(CharSequence... keysToSend) {
     input.sendKeys(keysToSend);
   }
+
+  @Override
+  public Object executeScript(String script, Object... arguments) {
+    script = String.format(
+        "return function(arguments){arguments.pop(); %s}.bind(arguments[arguments.length-1])([].slice.call(arguments))",
+        script);
+    arguments = Arrays.copyOf(arguments, arguments.length + 1);
+    arguments[arguments.length - 1] = this;
+    return getCommandExecutor().executeScript(script, arguments);
+  }
+
 }
