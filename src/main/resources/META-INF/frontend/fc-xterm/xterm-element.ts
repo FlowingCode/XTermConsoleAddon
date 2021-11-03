@@ -74,17 +74,32 @@ class CustomKeyEventHandlerRegistry {
     delete this.handlers[id];
   }
 
-  handle(context: any, ev: KeyboardEvent) : void {
-    //invoke latest applicable handler for event
-    let j=-1;
+  handle(context: XTermElement, ev: KeyboardEvent) : boolean {
+    //invoke all the applicable handlers for event
+	let stopImmediatePropagation = ev.stopImmediatePropagation.bind(ev);
+
+	let immediatePropagationStopped = false;
+	ev.stopImmediatePropagation= () => {
+		stopImmediatePropagation();
+		immediatePropagationStopped=true;
+	};
+	
+	let handled = false;
     for(const i in this.handlers) {
-      if (/\d+/.test(i) && this.handlers[i].predicate(ev)) j=Math.max(j, parseInt(i));              
-    }
-    if (j>=0) {
-        ev.cancelBubble=true;
-        this.handlers[j].handle?.call(context, ev);        
-    }
+      if (/\d+/.test(i) && this.handlers[i].predicate(ev)) {
+		handled=true;
+		this.handlers[i].handle?.call(context, ev);
+		if (immediatePropagationStopped) break;
+	  }
+	}
+	
+	if ((ev as any).requestCustomEvent) {
+		context.dispatchEvent(new CustomEvent('CustomKey', {detail: ev}));
+	}
+	
+	return handled;
   }
+
 }
 	
 export interface TerminalMixin {
@@ -153,11 +168,7 @@ export class XTermElement extends LitElement implements TerminalMixin {
 
     term.attachCustomKeyEventHandler(ev => {
       if (ev.type!=='keydown') return false;
-      
-      this.customKeyEventHandlers.handle(this, ev);
-      if (ev.cancelBubble) return false;
-      
-      return true; 
+      return !this.customKeyEventHandlers.handle(this, ev); 
     });   
   }
  
@@ -187,7 +198,7 @@ export class XTermElement extends LitElement implements TerminalMixin {
   }
     
   registerCustomKeyListener(customKey: CustomKey) : integer {
-    let handler : KeyboardEventHandler = (ev: KeyboardEvent) => this.dispatchEvent(new CustomEvent('CustomKey', {detail: ev}));
+    let handler : KeyboardEventHandler = (ev: KeyboardEvent) => (ev as any).requestCustomEvent = true;
     return this.customKeyEventHandlers.register(customKey, handler).id;
   }
 
