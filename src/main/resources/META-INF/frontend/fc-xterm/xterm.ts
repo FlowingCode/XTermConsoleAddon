@@ -19,7 +19,6 @@
  */
 import { customElement } from 'lit-element';
 
-//import { InsertFixFeature } from '@vaadin/flow-frontend/fc-xterm/insert-fix-feature';
 import { XTermElement } from '@vaadin/flow-frontend/fc-xterm/xterm-element';
 import { XTermClipboardMixin } from '@vaadin/flow-frontend/fc-xterm/xterm-clipboard-mixin';
 import { XTermConsoleMixin } from '@vaadin/flow-frontend/fc-xterm/xterm-console-mixin';
