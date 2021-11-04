@@ -36,6 +36,16 @@ public class ConsoleFeatureIT extends AbstractViewTest {
   }
 
   @Test
+  public void testWriteWrappedLine() throws InterruptedException {
+    XTermElement term = $(XTermElement.class).first();
+    Position home = term.cursorPosition();
+    String text = makeFullLine(term, true) + makeFullLine(term, false);
+    term.sendKeys(text);
+    assertThat(term.currentLine(), is(text));
+    assertThat(term.cursorPosition(), is(new Position(1, home.y + 1)));
+  }
+
+  @Test
   public void testFeature() throws InterruptedException {
     XTermElement term = $(XTermElement.class).first();
 
