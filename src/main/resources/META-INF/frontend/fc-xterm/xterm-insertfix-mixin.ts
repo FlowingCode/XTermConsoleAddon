@@ -43,7 +43,7 @@ class InsertFixAddon extends TerminalAddon<TerminalMixin> {
 			const printedLength = end-start;
 			let  trimmedLength = bufferRow.getTrimmedLength();
 			
-			if (trimmedLength+printedLength > bufferRow.length) {
+			if (buffer.x!=trimmedLength && trimmedLength+printedLength > bufferRow.length) {
 				let range = buffer.getWrappedRangeForLine(buffer.y + buffer.ybase)
 				range.first = buffer.y + buffer.ybase;
 				
