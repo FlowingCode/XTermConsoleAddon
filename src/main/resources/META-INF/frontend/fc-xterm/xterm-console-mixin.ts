@@ -53,7 +53,7 @@ class ConsoleAddon extends TerminalAddon<IConsoleMixin> {
 		let scanEOL = (function() {
 			let buffer = this._bufferService.buffer;
 			let col = this._bufferService.buffer.lines.get(buffer.ybase+buffer.y).getTrimmedLength();
-			this.cursorCharAbsolute({params:[col+1]});
+			this._activeBuffer.x = Math.min(col, terminal.cols);
 		}).bind(inputHandler);
 		
 		let cursorForwardWrapped = (function(params: any) {
@@ -109,7 +109,7 @@ class ConsoleAddon extends TerminalAddon<IConsoleMixin> {
 					line.isWrapped=false;
 					if (y==range.last) {
 						y--;
-						x=this._bufferService.cols-1;
+						x=this._bufferService.cols;
 					}
 				}
 			}
