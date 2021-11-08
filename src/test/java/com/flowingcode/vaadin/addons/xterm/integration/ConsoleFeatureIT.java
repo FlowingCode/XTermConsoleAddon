@@ -39,14 +39,16 @@ public class ConsoleFeatureIT extends AbstractViewTest {
   public void testWriteWrappedLine() throws InterruptedException {
     XTermElement term = $(XTermElement.class).first();
     Position home = term.cursorPosition();
-    String text = makeFullLine(term, true) + makeFullLine(term, false);
+    String text = makeFullLine(term, true) + "Z";
     term.sendKeys(text);
     assertThat(term.currentLine(), is(text));
     assertThat(term.cursorPosition(), is(new Position(1, home.y + 1)));
+    assertThat(term.lineAtOffset(0), is("Z"));
   }
 
   @Test
   public void testFeature() throws InterruptedException {
+    // navigation with keyboard
     XTermElement term = $(XTermElement.class).first();
 
     Position pos = term.cursorPosition();
@@ -124,6 +126,7 @@ public class ConsoleFeatureIT extends AbstractViewTest {
 
   @Test
   public void testCsiSequences() throws InterruptedException {
+    // CSI sequences that implement navigation with keyboard
     XTermElement term = $(XTermElement.class).first();
     Position pos = term.cursorPosition();
 
@@ -142,24 +145,72 @@ public class ConsoleFeatureIT extends AbstractViewTest {
     term.write("\u001b[<L");
     assertThat(term.cursorPosition(), is(pos.plus(4, 0)));
 
+    term.write("\u001b[<2L");
+    assertThat(term.cursorPosition(), is(pos.plus(2, 0)));
+
     // Cursor Forward Wrapped
     term.write("\u001b[<R");
-    assertThat(term.cursorPosition(), is(pos.plus(5, 0)));
+    assertThat(term.cursorPosition(), is(pos.plus(3, 0)));
 
     // Backspace
     term.write("\u001b[<B");
-    assertThat(term.cursorPosition(), is(pos.plus(4, 0)));
-    assertThat(term.currentLine(), is("HELL"));
+    assertThat(term.cursorPosition(), is(pos.plus(2, 0)));
+    assertThat(term.currentLine(), is("HELO"));
 
     // Delete Characters Wrapped
     term.write("\u001b[<H");
     term.write("\u001b[<D");
     assertThat(term.cursorPosition(), is(pos));
-    assertThat(term.currentLine(), is("ELL"));
+    assertThat(term.currentLine(), is("ELO"));
 
     term.write("\u001b[<2D");
     assertThat(term.cursorPosition(), is(pos));
-    assertThat(term.currentLine(), is("L"));
+    assertThat(term.currentLine(), is("O"));
+  }
+
+  @Test
+  public void testCsiSequencesWrapped() throws InterruptedException {
+    // CSI sequences that implement navigation with keyboard, on a wrapped line
+    XTermElement term = $(XTermElement.class).first();
+    term.executeScript("this.terminal.resize(30,20)");
+    term.sendKeys(Keys.ENTER);
+    Position home = term.cursorPosition();
+
+    String text = makeFullLine(term, true) + makeFullLine(term, false) + makeFullLine(term, false);
+    term.sendKeys(text);
+
+    assertThat(term.currentLine(), is(text));
+    Position end = term.cursorPosition();
+
+    term.write("\u001b[<H");
+    assertThat(term.cursorPosition(), is(home));
+
+    term.write("\u001b[<" + text.length() + "D");
+    assertThat(term.cursorPosition(), is(home));
+    assertThat(term.currentLine(), isEmptyString());
+
+    term.sendKeys(text);
+    term.write("\u001b[<H");
+    term.write("\u001b[<" + text.length() + "R");
+    assertThat(term.cursorPosition(), is(end));
+
+    term.write("\u001b[<" + (text.length() - 1) + "L");
+    assertThat(term.cursorPosition(), is(home));
+
+    int cols = term.getColumnWidth();
+    for (int i = 0; i < text.length() - 1; i++) {
+      term.write("\u001b[<R");
+      assertThat(term.cursorPosition(), is(home.plus(i + 1, 0).adjust(cols)));
+    }
+    term.write("\u001b[<R");
+    assertThat(term.cursorPosition(), is(end));
+
+    term.write("\u001b[<L");
+    for (int i = text.length() - 1; i > 0; i--) {
+      assertThat(term.cursorPosition(), is(home.plus(i - 1, 0).adjust(cols)));
+      term.write("\u001b[<L");
+    }
+
   }
 
 }
