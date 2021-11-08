@@ -41,4 +41,10 @@ class Position {
     return new Position(this.x+dx, this.y+dy);
   }
   
+  /**Return a new position that is equal to this position adjusted by <code>columnWidth</code>.*/
+  public Position adjust(int columnWidth) {
+    int pos = x + y*columnWidth;
+    return new Position(pos%columnWidth, pos/columnWidth);
+  }
+  
 }
