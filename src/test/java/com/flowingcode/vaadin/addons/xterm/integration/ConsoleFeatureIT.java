@@ -81,7 +81,7 @@ public class ConsoleFeatureIT extends AbstractViewTest {
 
 
     // long line
-    term.sendKeys("\n");
+    term.sendKeys(Keys.ENTER);
     assertThat(term.currentLine(), is(""));
     assertThat(term.cursorPosition(), is(pos.advance(0, 1)));
 
