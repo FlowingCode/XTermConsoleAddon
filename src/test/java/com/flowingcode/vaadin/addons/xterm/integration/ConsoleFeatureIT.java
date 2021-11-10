@@ -19,21 +19,14 @@
  */
 package com.flowingcode.vaadin.addons.xterm.integration;
 
+import static com.flowingcode.vaadin.addons.xterm.integration.XTermTestUtils.makeFullLine;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isEmptyString;
 import static org.junit.Assert.assertThat;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.openqa.selenium.Keys;
 
 public class ConsoleFeatureIT extends AbstractViewTest {
-
-  /** Returns a line that runs up to the right margin */
-  private String makeFullLine(XTermElement term, boolean hasPrompt) {
-    int cols = term.getColumnWidth();
-    int x = hasPrompt ? term.cursorPosition().x : 0;
-    return StringUtils.repeat("0123456789", cols / 10 + 1).substring(0, cols - x);
-  }
 
   @Test
   public void testWriteWrappedLine() throws InterruptedException {
