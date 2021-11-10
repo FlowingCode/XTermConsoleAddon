@@ -20,7 +20,7 @@
 import { Terminal } from 'xterm'
 import { TerminalMixin, TerminalAddon } from '@vaadin/flow-frontend/fc-xterm/xterm-element';
 
-interface IConsoleMixin extends TerminalMixin {
+export interface IConsoleMixin extends TerminalMixin {
 	escapeEnabled: Boolean;
 	insertMode: Boolean;
 	readonly currentLine: string;

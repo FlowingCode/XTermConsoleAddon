@@ -24,9 +24,10 @@ import { XTermClipboardMixin } from '@vaadin/flow-frontend/fc-xterm/xterm-clipbo
 import { XTermConsoleMixin } from '@vaadin/flow-frontend/fc-xterm/xterm-console-mixin';
 import { XTermFitMixin } from '@vaadin/flow-frontend/fc-xterm/xterm-fit-mixin';
 import { XTermInsertFixMixin } from '@vaadin/flow-frontend/fc-xterm/xterm-insertfix-mixin';
+import { XTermSelectionMixin } from '@vaadin/flow-frontend/fc-xterm/xterm-selection-mixin';
 
 @customElement('fc-xterm')
-export class XTermComponent extends XTermInsertFixMixin(XTermClipboardMixin(XTermConsoleMixin(XTermFitMixin(XTermElement)))) {
+export class XTermComponent extends XTermInsertFixMixin(XTermClipboardMixin(XTermConsoleMixin(XTermSelectionMixin(XTermFitMixin(XTermElement))))) {
     
 }
 
