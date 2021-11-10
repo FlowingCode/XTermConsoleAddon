@@ -33,6 +33,10 @@ public class XTermElement extends TestBenchElement {
     return getPropertyString("currentLine");
   }
 
+  public String getSelection() {
+    return (String) executeScript("return this.terminal.getSelection()");
+  }
+
   public String lineAtOffset(int offset) {
     return ((String) executeScript(
         "buffer=this.terminal._core._inputHandler._bufferService.buffer;"
