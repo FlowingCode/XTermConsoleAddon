@@ -40,7 +40,7 @@ class ConsoleAddon extends TerminalAddon<IConsoleMixin> {
 			line += buffer.lines.get(i).translateToString();
 		}
 		line = line.replace(/\s+$/,"");
-		if (this.__yPrompt==range.first) line = line.substring(this.$.prompt.length);
+		if (this.$.prompt && this.__yPrompt==range.first) line = line.substring(this.$.prompt.length);
 		return line;
 	}
 	
