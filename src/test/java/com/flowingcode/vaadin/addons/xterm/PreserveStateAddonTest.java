@@ -30,4 +30,20 @@ public class PreserveStateAddonTest {
         addon.writeln("baz");
         assertEquals("a> bar\nb> baz\n", addon.getScrollbackBuffer());
     }
+
+    @Test
+    public void clearClearsScrollbackBuffer() {
+        final PreserveStateAddon addon = new PreserveStateAddon(new XTerm());
+        addon.writeln("bar");
+        addon.clear();
+        assertEquals("", addon.getScrollbackBuffer());
+    }
+
+    @Test
+    public void resetClearsScrollbackBuffer() {
+        final PreserveStateAddon addon = new PreserveStateAddon(new XTerm());
+        addon.writeln("bar");
+        addon.reset();
+        assertEquals("", addon.getScrollbackBuffer());
+    }
 }
