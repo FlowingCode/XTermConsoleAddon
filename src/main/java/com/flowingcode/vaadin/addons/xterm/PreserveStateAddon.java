@@ -194,6 +194,7 @@ public class PreserveStateAddon implements ITerminal, ITerminalOptions {
     @Override
     public void reset() {
         xterm.reset();
+        scrollbackBuffer.delete(0, scrollbackBuffer.length());
     }
 
     @Override
