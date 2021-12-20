@@ -35,13 +35,13 @@ class FitAddon extends FitAddonBase {
 	const super_fit = this.fit.bind(this);
 	this.fit = () => {
 		super_fit();
-		this.__unsetWidth();
 		requestAnimationFrame(()=>this.__unsetWidth());
 	};
   }
   
   __unsetWidth() {
-    (this.$.node.terminal as any)._core.viewport._viewportElement.style.width='unset';
+    let viewport = (this.$.node.terminal as any)._core.viewport;
+    if (viewport) viewport._viewportElement.style.width='unset';
   }
 
   activate(terminal: Terminal): void {
@@ -85,7 +85,7 @@ export function XTermFitMixin<TBase extends Constructor<TerminalMixin>>(Base: TB
 
     fit() {
       this._fitAddon.proposeDimensions();
-	  window.requestAnimationFrame(()=>{ 
+	  window.setTimeout(()=>{ 
 	      try {
 	        this._fitAddon?.fit();
 	      } catch (e) {
