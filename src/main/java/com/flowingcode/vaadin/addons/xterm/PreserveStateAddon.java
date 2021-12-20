@@ -39,7 +39,8 @@ import java.util.concurrent.CompletableFuture;
  * final XTerm xterm = new XTerm();
  * final PreserveStateAddon addon = new PreserveStateAddon(xterm);
  * addon.writeln("Hello!");
- * addon.write("$ ");
+ * addon.setPrompt("$ ");
+ * addon.writePrompt();
  * </pre>
  */
 public class PreserveStateAddon implements ITerminal, ITerminalOptions {
@@ -198,5 +199,32 @@ public class PreserveStateAddon implements ITerminal, ITerminalOptions {
     @Override
     public void resize(int columns, int rows) {
         xterm.resize(columns, rows);
+    }
+
+    /**
+     * {@link ITerminalConsole#setPrompt(String)}
+     */
+    public void setPrompt(String prompt) {
+        xterm.setPrompt(prompt);
+    }
+
+    /**
+     * {@link ITerminalConsole#getPrompt()}
+     */
+    public String getPrompt() {
+        return xterm.getPrompt();
+    }
+
+    public void writePrompt() {
+        xterm.writePrompt();
+        scrollbackBuffer.append(xterm.getPrompt());
+    }
+
+    public String getScrollbackBuffer() {
+        return scrollbackBuffer.toString();
+    }
+
+    public XTerm getXTerm() {
+        return xterm;
     }
 }
