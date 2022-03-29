@@ -81,6 +81,8 @@ export function XTermFitMixin<TBase extends Constructor<TerminalMixin>>(Base: TB
       
 	  this._fitAddon = addon;
       this.fit();
+
+      this.node.addEventListener("terminal-initialized", () => this.fit());
     }
 
     fit() {
