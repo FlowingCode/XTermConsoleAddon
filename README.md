@@ -15,7 +15,8 @@ Vaadin 14+ Java integration of [xterm.js](https://xtermjs.org/) terminal emulato
 
 ## Online demo
 
-[Online demo here](http://addonsv14.flowingcode.com/xterm)
+* [Vaadin 14](http://addonsv14.flowingcode.com/xterm) (Addon version 1.x)
+* [Vaadin 23](http://addonsv23.flowingcode.com/xterm) (Addon version 2.x)
 
 ## Download release
 
