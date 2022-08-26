@@ -98,7 +98,10 @@ public class TerminalHistory implements Serializable {
       registrations = null;
     } else if (enabled && registrations == null) {
       registrations = new ArrayList<>();
-      registrations.add(((ITerminalConsole) terminal).addLineListener(ev -> add(ev.getLine())));
+      registrations.add(((ITerminalConsole) terminal).addLineListener(ev -> {
+        add(ev.getLine());
+        resetIterator();
+      }));
       registrations.add(terminal.addCustomKeyListener(ev -> handleArrowUp(), Key.ARROW_UP));
       registrations.add(terminal.addCustomKeyListener(ev -> handleArrowDown(), Key.ARROW_DOWN));
     }
@@ -168,11 +171,17 @@ public class TerminalHistory implements Serializable {
     line = line.trim();
     if (!line.isEmpty()) {
       history.add(Objects.requireNonNull(line));
-      iterator = null;
+      resetIterator();
       if (maxSize != null && history.size() > maxSize) {
         history.removeLast();
       }
     }
+  }
+
+  private void resetIterator()
+  {
+    lastRet = null;
+    iterator = null;
   }
 
   private Optional<String> find(Iterator<String> iterator, Predicate<String> predicate) {
