@@ -71,4 +71,44 @@ public class TerminalHistoryIT extends AbstractViewTest {
     assertThat(term.currentLine(), is("bar"));
   }
 
+  @Test
+  public void testArrowUpAfterRunningLastCommandFromHistory() {
+    XTermElement term = $(XTermElement.class).first();
+
+    term.sendKeys("foo1\n");
+    term.sendKeys("foo2\n");
+
+    assertThat(term.currentLine(), isEmptyString());
+
+    term.sendKeys(Keys.ARROW_UP);
+    assertThat(term.currentLine(), is("foo2"));
+    term.sendKeys("\n");
+
+    term.sendKeys(Keys.ARROW_UP);
+    assertThat(term.currentLine(), is("foo2"));
+
+    term.sendKeys(Keys.ARROW_UP);
+    assertThat(term.currentLine(), is("foo1"));
+  }
+
+  @Test
+  public void testArrowUpAfterRunningEmptyCommand() {
+    XTermElement term = $(XTermElement.class).first();
+
+    term.sendKeys("foo1\n");
+    term.sendKeys("foo2\n");
+
+    assertThat(term.currentLine(), isEmptyString());
+
+    term.sendKeys(Keys.ARROW_UP);
+    assertThat(term.currentLine(), is("foo2"));
+    term.sendKeys("\u0008\u0008\u0008\u0008"); // 4 backspaces
+    assertThat(term.currentLine(), isEmptyString());
+    term.sendKeys("\n");
+
+    term.sendKeys(Keys.ARROW_UP);
+    // The position in the history should be back at the end
+    assertThat(term.currentLine(), is("foo2"));
+  }
+
 }
