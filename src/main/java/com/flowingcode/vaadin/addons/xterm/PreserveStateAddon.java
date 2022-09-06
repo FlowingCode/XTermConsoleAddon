@@ -87,10 +87,13 @@ public class PreserveStateAddon implements ITerminal, ITerminalOptions {
             if (wasDetachedOnce) {
                 optionsMemoizer.apply();
                 xterm.write(scrollbackBuffer.toString());
+                xterm.writePrompt();
             }
         });
         xterm.addDetachListener(e -> wasDetachedOnce = true);
         xterm.addLineListener(e -> {
+            // add the prompt to the scrollback buffer
+            scrollbackBuffer.append(xterm.getPrompt());
             // also make sure that any user input ends up in the scrollback buffer.
             scrollbackBuffer.append(e.getLine());
             scrollbackBuffer.append('\n');
@@ -218,7 +221,6 @@ public class PreserveStateAddon implements ITerminal, ITerminalOptions {
 
     public void writePrompt() {
         xterm.writePrompt();
-        scrollbackBuffer.append(xterm.getPrompt());
     }
 
     public String getScrollbackBuffer() {
