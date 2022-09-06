@@ -63,14 +63,18 @@ The issues for this add-on are tracked on its github.com page. All bug reports a
 
 ## Contributions
 
-Contributions are welcome, but there are no guarantees that they are accepted as such. Process for contributing is the following:
+Contributions are welcome, but there are no guarantees that they are accepted as such. 
 
-- Fork this project
+As first step, please refer to our [Development Conventions](https://github.com/FlowingCode/DevelopmentConventions) page to find information about Conventional Commits & Code Style requeriments.
+
+Then, follow these steps for creating a contibution:
+
+- Fork this project.
 - Create an issue to this project about the contribution (bug or feature) if there is no such issue about it already. Try to keep the scope minimal.
 - Develop and test the fix or functionality carefully. Only include minimum amount of code needed to fix the issue.
-- Refer to the fixed issue in commit
-- Send a pull request for the original project
-- Comment on the original issue that you have implemented a fix for it
+- For commit message, use [Conventional Commits](https://github.com/FlowingCode/DevelopmentConventions/blob/main/conventional-commits.md) to describe your change.
+- Send a pull request for the original project.
+- Comment on the original issue that you have implemented a fix for it.
 
 ## License & Author
 
