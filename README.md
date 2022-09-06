@@ -24,6 +24,28 @@ Vaadin 14+ Java integration of [xterm.js](https://xtermjs.org/) terminal emulato
 
 [Available in Vaadin Directory](https://vaadin.com/directory/component/xterm-console-addon)
 
+### Maven install
+
+Add the following dependencies in your pom.xml file:
+
+```xml
+<dependency>
+   <groupId>com.flowingcode.addons</groupId>
+   <artifactId>xterm-console</artifactId>
+   <version>X.Y.Z</version>
+</dependency>
+```
+<!-- the above dependency should be updated with latest released version information -->
+
+```xml
+<repository>
+   <id>vaadin-addons</id>
+   <url>https://maven.vaadin.com/vaadin-addons</url>
+</repository>
+```
+
+For SNAPSHOT versions see [here](https://maven.flowingcode.com/snapshots/).
+
 ## Building and running demo
 
 - git clone repository
