@@ -65,7 +65,7 @@ class ClipboardAddon extends TerminalAddon<IClipboardMixin> {
 		let initializer = ()=>{
 			//paste with right click
 			this._disposables.push(onEvent('contextmenu', ev => {
-				if (this.$.pasteWithRightClick && !terminal.getOption('rightClickSelectsWord')) {
+				if (this.$.pasteWithRightClick && !terminal.options.rightClickSelectsWord) {
 					ev.preventDefault();
 					if (_internalClipboard!==undefined) readText().then(text=>terminal.paste(text));
 				}
