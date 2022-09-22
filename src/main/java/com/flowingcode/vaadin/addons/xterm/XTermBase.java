@@ -124,7 +124,7 @@ public abstract class XTermBase extends Component
         } else {
           arg = (Serializable) args[0];
         }
-        return executeJs(false, "this.terminal.setOption($0,$1)", name, arg);
+        return executeJs(false, "this.terminal.options[$0]=$1", name, arg);
       } else if (args == null || args.length == 0) {
         return executeJs(hasResult, "return this.terminal[$0]()", name);
       } else if (args.length == 1) {
@@ -157,8 +157,8 @@ public abstract class XTermBase extends Component
           optionsProxyClass
               .getConstructor(InvocationHandler.class)
               .newInstance(new ProxyInvocationHandler());
-      this.terminalProxy = (ITerminal) proxy;
-      this.terminalOptionsProxy = (ITerminalOptions) proxy;
+      terminalProxy = (ITerminal) proxy;
+      terminalOptionsProxy = (ITerminalOptions) proxy;
     } catch (InstantiationException
         | IllegalAccessException
         | InvocationTargetException
@@ -173,7 +173,7 @@ public abstract class XTermBase extends Component
     div.getStyle().set("height", "100%");
     getElement().appendChild(div);
 
-    this.deferredCommands = new LinkedList<>();
+    deferredCommands = new LinkedList<>();
 
     Registration r[] = new Registration[1];
     r[0] = getElement().addEventListener("terminal-initialized", ev -> afterInitialization());
