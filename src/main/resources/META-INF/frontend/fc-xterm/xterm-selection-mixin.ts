@@ -127,17 +127,10 @@ class SelectionAddon extends TerminalAddon<ISelectionMixin> {
 				let range = buffer.getWrappedRangeForLine(buffer.ybase+buffer.y);				
 				let pos = terminal.getSelectionPosition();				
 				
-				//see https://github.com/xtermjs/xterm.js/issues/3552
-				pos.endColumn==0 && --pos.endRow;
-				
 				if (pos && pos.startRow>=range.first && pos.endRow<=range.last) {
 					if (!this.__selectionRight) {
 						//cursor backward wrapped
-						if (pos.endColumn==0) {
-							terminal.write("\x1b[<" + (this.__selectionLength-1) + "L");
-						} else {
-							terminal.write("\x1b[<" + this.__selectionLength + "L");
-						}
+						terminal.write("\x1b[<" + this.__selectionLength + "L");
 					}
 					//delete characters wrapped
 					terminal.write("\x1b[<" + this.__selectionLength + "D");
