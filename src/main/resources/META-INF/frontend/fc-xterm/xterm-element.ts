@@ -153,7 +153,7 @@ export class XTermElement extends LitElement implements TerminalMixin {
     super.connectedCallback();
 
     let term = this.terminal;
-    term.setOption('convertEol', true);
+    term.options.convertEol = true;
     
     //onLineFeed doesn't distinguish lines from user input and lines from terminal.write
     //<N CSI is handled by console-feature
@@ -164,7 +164,7 @@ export class XTermElement extends LitElement implements TerminalMixin {
     //https://gist.github.com/literallylara/7ece1983fab47365108c47119afb51c7
     //(C) Lara Sophie Schütt 2016, CC0 
     for(var i=44100*0.1,d="";i--;)d+=String.fromCharCode(~~((Math.sin(i/44100*2*Math.PI*800)+1)*128)); 
-    term.setOption('bellSound',"data:Audio/WAV;base64,"+btoa("RIFFdataWAVEfmt "+atob("EAAAAAEAAQBErAAARKwAAAEACABkYXRh/////w==")+d));
+    term.options.bellSound = "data:Audio/WAV;base64,"+btoa("RIFFdataWAVEfmt "+atob("EAAAAAEAAQBErAAARKwAAAEACABkYXRh/////w==")+d);
 
     term.attachCustomKeyEventHandler(ev => {
       if (ev.type!=='keydown') return false;
@@ -193,7 +193,7 @@ export class XTermElement extends LitElement implements TerminalMixin {
   }
 
   _disabledChanged(disabled: boolean) {
-    this.terminal.setOption('disableStdin', disabled);
+    this.terminal.options.disableStdin=disabled;
     this.terminal.write(disabled?"\x1b[?25l":"\x1b[?25h");
   }
     
