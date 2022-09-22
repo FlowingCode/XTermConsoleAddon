@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -57,7 +57,7 @@ import lombok.experimental.Delegate;
 
 /** Server-side component for the XTerm component. */
 @SuppressWarnings("serial")
-@NpmPackage(value = "xterm", version = "4.14.0")
+@NpmPackage(value = "xterm", version = "4.19.0")
 @JsModule("./fc-xterm/xterm-element.ts")
 @CssImport("xterm/css/xterm.css")
 public abstract class XTermBase extends Component
@@ -197,7 +197,7 @@ public abstract class XTermBase extends Component
       throw new IllegalStateException("Terminal is not initialized");
     }
   }
-  
+
   protected void executeJs(String expression, Serializable... parameters) {
     if (deferredCommands == null) {
       getElement().executeJs(expression, parameters);
