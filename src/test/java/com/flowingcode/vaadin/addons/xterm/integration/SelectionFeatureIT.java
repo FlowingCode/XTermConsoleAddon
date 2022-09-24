@@ -98,9 +98,7 @@ public class SelectionFeatureIT extends AbstractViewTest {
     term.write(text);
     assertThat(term.currentLine(), is(text));
     term.sendKeys(Keys.SHIFT, Keys.HOME);
-    // https://github.com/xtermjs/xterm.js/issues/3552
-    // Selecting a whole line using API includes trailing CRLF
-    assertThat(term.getSelection(), is(text + "\n"));
+    assertThat(term.getSelection(), is(text));
     term.sendKeys(Keys.DELETE);
     assertThat(term.currentLine(), isEmptyString());
 
@@ -109,9 +107,10 @@ public class SelectionFeatureIT extends AbstractViewTest {
     assertThat(term.currentLine(), is(text));
     term.sendKeys(Keys.HOME);
     term.sendKeys(Keys.SHIFT, Keys.END);
-    assertThat(term.getSelection(), is(text + "\n"));
+    assertThat(term.getSelection(), is(text));
     term.sendKeys(Keys.DELETE);
     assertThat(term.currentLine(), isEmptyString());
+
   }
 
 }
