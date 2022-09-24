@@ -97,6 +97,9 @@ class CustomKeyEventHandlerRegistry {
 		context.dispatchEvent(new CustomEvent('CustomKey', {detail: ev}));
 	}
 	
+	//https://github.com/FlowingCode/XTermConsoleAddon/issues/59
+	let core = (context.terminal as any)._core as ITerminal;
+	(core as any)._keyDownSeen = false;
 	return handled;
   }
 
