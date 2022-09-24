@@ -102,7 +102,7 @@ public class SelectionFeatureIT extends AbstractViewTest {
     term.sendKeys(Keys.DELETE);
     assertThat(term.currentLine(), isEmptyString());
 
-    // select to home, delete (wrapping)
+    // select to end, delete (wrapping)
     term.write(text);
     assertThat(term.currentLine(), is(text));
     term.sendKeys(Keys.HOME);
