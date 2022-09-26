@@ -89,16 +89,17 @@ class ConsoleAddon extends TerminalAddon<IConsoleMixin> {
 			let buffer = this._bufferService.buffer;
 			let x = buffer.x;
 			let y = buffer.y;
-			let apply=true;
+			let apply=false;
 			
 			for (let i=0; i< (params && params[0] || 1); i++) {
 				let line = buffer.lines.get(buffer.y+buffer.ybase);
 				if (!line.isWrapped && buffer.x< 1+promptLength()) {
-					apply=false;
 					break;
 				} else if (buffer.x>0) {
+					apply=true;
 					this.cursorBackward({params:[1]});
 				} else if (line.isWrapped) {
+					apply=true;
 					this.cursorPrecedingLine({params:[1]});
 					scanEOL();
 					--this._activeBuffer.x;
