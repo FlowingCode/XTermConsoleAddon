@@ -455,7 +455,28 @@
 				</plugins>
 			</build>
 		</profile>
-        
+
+		<profile>
+			<id>v24</id>
+			<properties>
+				<maven.compiler.source>17</maven.compiler.source>
+				<maven.compiler.target>17</maven.compiler.target>
+				<vaadin.version>24.0.0.alpha5</vaadin.version>
+				<jetty.version>11.0.12</jetty.version>
+			</properties>
+			<repositories>
+				<repository>
+					<id>vaadin-prerelease</id>
+					<url>https://maven.vaadin.com/vaadin-prereleases</url>
+				</repository>
+			</repositories>
+			<pluginRepositories>
+				<pluginRepository>
+					<id>vaadin-prerelease</id>
+					<url>https://maven.vaadin.com/vaadin-prereleases</url>
+				</pluginRepository>
+			</pluginRepositories>
+		</profile>
     </profiles>
     
 </project>
