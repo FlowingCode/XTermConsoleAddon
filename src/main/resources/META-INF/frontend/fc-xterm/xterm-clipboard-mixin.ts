@@ -57,8 +57,8 @@ class ClipboardAddon extends TerminalAddon<IClipboardMixin> {
 		}
 		
 		let onEvent = (event, listener) => {
-			terminal.element.addEventListener(event, listener);
-			return {dispose : () => terminal.element.removeEventListener(event, listener)};
+			terminal.element!.addEventListener(event, listener);
+			return {dispose : () => terminal.element!.removeEventListener(event, listener)};
 		};
 		
 		

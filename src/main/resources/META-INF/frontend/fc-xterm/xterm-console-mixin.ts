@@ -312,12 +312,12 @@ export function XTermConsoleMixin<TBase extends Constructor<TerminalMixin>>(Base
 	}
 
 	get currentLine() : string {
-		return this._consoleAddon.currentLine;
+		return this._consoleAddon!.currentLine;
 	}
 
 	writePrompt() {
 		//execute writePrompt with blocking semantics 
-		this.node.terminal.write('', ()=>this._consoleAddon.writePrompt());
+		this.node.terminal.write('', ()=>this._consoleAddon!.writePrompt());
 	}
 	
  }
