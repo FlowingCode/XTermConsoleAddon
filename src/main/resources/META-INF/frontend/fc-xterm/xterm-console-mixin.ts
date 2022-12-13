@@ -248,7 +248,7 @@ class ConsoleAddon extends TerminalAddon<IConsoleMixin> {
 			'F5',
 			'F6',
 			'F12'
-		].includes(ev.key), null),
+		].includes(ev.key), undefined),
 		
 		terminal.parser.registerCsiHandler({prefix: '<', final: 'N'}, linefeed)
 
