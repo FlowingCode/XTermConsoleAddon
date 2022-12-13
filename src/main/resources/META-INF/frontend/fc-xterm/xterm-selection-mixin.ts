@@ -28,7 +28,7 @@ interface ISelectionMixin extends TerminalMixin {
 class SelectionAddon extends TerminalAddon<ISelectionMixin> {
 
 	__selectionLength: number;
-	__selectionAnchor: number;
+	__selectionAnchor?: number;
 	__selectionRight:  boolean = true;
 	
 	activateCallback(terminal: Terminal): void {
@@ -69,7 +69,7 @@ class SelectionAddon extends TerminalAddon<ISelectionMixin> {
 				this.__selectionRight = !this.__selectionRight;
 			}
 
-			let newSelectionStart = this.__selectionAnchor;
+			let newSelectionStart = this.__selectionAnchor!;
 			if (!this.__selectionRight) {
 				newSelectionStart -= newSelectionLength;
 			}
@@ -101,7 +101,7 @@ class SelectionAddon extends TerminalAddon<ISelectionMixin> {
 			
 			resetSelection();
 			ensureSelection();
-			let dx = range.first * terminal.cols - this.__selectionAnchor;
+			let dx = range.first * terminal.cols - this.__selectionAnchor!;
 			if (pos.startRow != range.first || pos.startColumn != promptLength()) {
 				dx+= promptLength();
 			}
@@ -117,7 +117,7 @@ class SelectionAddon extends TerminalAddon<ISelectionMixin> {
 			
 			resetSelection();
 			ensureSelection();
-			moveSelection(range.last * terminal.cols + buffer.lines.get(range.last).getTrimmedLength() - this.__selectionAnchor);
+			moveSelection(range.last * terminal.cols + buffer.lines.get(range.last).getTrimmedLength() - this.__selectionAnchor!);
 		};
 		
 		let deleteSelection = (ev: KeyboardEvent) => {
