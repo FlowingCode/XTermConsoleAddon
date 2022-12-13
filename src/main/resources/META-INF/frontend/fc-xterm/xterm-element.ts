@@ -50,9 +50,9 @@ class CustomKeyEventHandlerRegistry {
   private handlers: CustomKeyEventHandler[] = [];
   private next:integer=0;
 
-  register(customKey: CustomKey, handle: (event: KeyboardEvent) => void): CustomKeyEventHandlerRegistryDisposable;
-  register(predicate: KeyboardEventPredicate, handle: KeyboardEventHandler) : CustomKeyEventHandlerRegistryDisposable;
-  register(arg: CustomKey | KeyboardEventPredicate, handle: KeyboardEventHandler) : CustomKeyEventHandlerRegistryDisposable {    
+  register(customKey: CustomKey, handle?: (event: KeyboardEvent) => void): CustomKeyEventHandlerRegistryDisposable;
+  register(predicate: KeyboardEventPredicate, handle?: KeyboardEventHandler) : CustomKeyEventHandlerRegistryDisposable;
+  register(arg: CustomKey | KeyboardEventPredicate, handle?: KeyboardEventHandler) : CustomKeyEventHandlerRegistryDisposable {    
     let predicate : KeyboardEventPredicate;
     if ((typeof arg) === 'object') {
         let customKey = arg as any;
