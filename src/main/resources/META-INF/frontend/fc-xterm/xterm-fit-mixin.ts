@@ -86,10 +86,10 @@ export function XTermFitMixin<TBase extends Constructor<TerminalMixin>>(Base: TB
     }
 
     fit() {
-      this._fitAddon.proposeDimensions();
+      this._fitAddon!.proposeDimensions();
 	  window.setTimeout(()=>{ 
 	      try {
-	        this._fitAddon?.fit();
+	        this._fitAddon!.fit();
 	      } catch (e) {
 	        console.warn(e);
 	      }
