@@ -204,27 +204,32 @@ class ConsoleAddon extends TerminalAddon<IConsoleMixin> {
 		}).bind(inputHandler);
 		
 		let hasModifiers = (ev:KeyboardEvent) => ev.shiftKey || ev.altKey || ev.metaKey || ev.ctrlKey;
+
+		function probe_others<T>(callback: ((params: T[]) => void)): ((params: T[]) => boolean) {
+			// execute callback and also probe for other handlers
+			return params => {callback(params); return false;}
+		};
 		
 		this._disposables = [
-		terminal.parser.registerCsiHandler({prefix: '<', final: 'H'}, cursorHome),	
+		terminal.parser.registerCsiHandler({prefix: '<', final: 'H'}, probe_others(cursorHome)),
 		this.$node.customKeyEventHandlers.register(ev=> ev.key=='Home' && !hasModifiers(ev), ()=> terminal.write('\x1b[<H')),
 		
-		terminal.parser.registerCsiHandler({prefix: '<', final: 'E'}, cursorEnd),
+		terminal.parser.registerCsiHandler({prefix: '<', final: 'E'}, probe_others(cursorEnd)),
 		this.$node.customKeyEventHandlers.register(ev=> ev.key=='End' && !hasModifiers(ev), ()=> terminal.write('\x1b[<E')),
 		
-		terminal.parser.registerCsiHandler({prefix: '<', final: 'L'}, cursorBackwardWrapped),
+		terminal.parser.registerCsiHandler({prefix: '<', final: 'L'}, probe_others(cursorBackwardWrapped)),
 		this.$node.customKeyEventHandlers.register(ev=> ev.key=='ArrowLeft' && !hasModifiers(ev), ()=> terminal.write('\x1b[<L')),
 		
-		terminal.parser.registerCsiHandler({prefix: '<', final: 'R'}, cursorForwardWrapped),
+		terminal.parser.registerCsiHandler({prefix: '<', final: 'R'}, probe_others(cursorForwardWrapped)),
 		this.$node.customKeyEventHandlers.register(ev=> ev.key=='ArrowRight' && !hasModifiers(ev), ()=> terminal.write('\x1b[<R')),
 		
-		terminal.parser.registerCsiHandler({prefix: '<', final: 'B'}, backspace),
+		terminal.parser.registerCsiHandler({prefix: '<', final: 'B'}, probe_others(backspace)),
 		this.$node.customKeyEventHandlers.register(ev=> ev.key=='Backspace' && !hasModifiers(ev), ()=> terminal.write('\x1b[<B')),
 		
-		terminal.parser.registerCsiHandler({prefix: '<', final: 'D'}, deleteChar),
+		terminal.parser.registerCsiHandler({prefix: '<', final: 'D'}, probe_others(deleteChar)),
 		this.$node.customKeyEventHandlers.register(ev=> ev.key=='Delete' && !hasModifiers(ev), ()=> terminal.write('\x1b[<D')),
 		
-		terminal.parser.registerCsiHandler({prefix: '<', final: 'K'}, eraseInLine),
+		terminal.parser.registerCsiHandler({prefix: '<', final: 'K'}, probe_others(eraseInLine)),
 		
 		this.$node.customKeyEventHandlers.register(ev=> ev.key=='Insert' && !hasModifiers(ev), ev=>{
 			this.$.insertMode = !this.$.insertMode;
@@ -250,7 +255,7 @@ class ConsoleAddon extends TerminalAddon<IConsoleMixin> {
 			'F12'
 		].includes(ev.key), undefined),
 		
-		terminal.parser.registerCsiHandler({prefix: '<', final: 'N'}, linefeed)
+		terminal.parser.registerCsiHandler({prefix: '<', final: 'N'}, probe_others(linefeed))
 
 		];
 		
