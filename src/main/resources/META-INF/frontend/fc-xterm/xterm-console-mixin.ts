@@ -56,11 +56,11 @@ class ConsoleAddon extends TerminalAddon<IConsoleMixin> {
 			this._activeBuffer.x = Math.min(col, terminal.cols);
 		}).bind(inputHandler);
 		
-		let cursorForwardWrapped = (function(params: any) {
+		let cursorForwardWrapped = (function(params: any = [0]) {
 			let buffer = this._bufferService.buffer;
 			let x = buffer.x;
 			let y = buffer.y;
-			for (let i=(params && params[0] || 1); i>0; --i) {
+			for (let i=(params[0] || 1); i>0; --i) {
 				let apply=false;
 				if (buffer.x>=this._bufferService.cols-1) {
 					let next = buffer.lines.get(buffer.y+buffer.ybase+1);
@@ -85,13 +85,13 @@ class ConsoleAddon extends TerminalAddon<IConsoleMixin> {
 			return true;
 		}).bind(inputHandler);
 			
-		let cursorBackwardWrapped = (function(params : any) {
+		let cursorBackwardWrapped = (function(params : any = [0]) {
 			let buffer = this._bufferService.buffer;
 			let x = buffer.x;
 			let y = buffer.y;
 			let apply=false;
 			
-			for (let i=0; i< (params && params[0] || 1); i++) {
+			for (let i=0; i< (params[0] || 1); i++) {
 				let line = buffer.lines.get(buffer.y+buffer.ybase);
 				if (!line.isWrapped && buffer.x< 1+promptLength()) {
 					break;
@@ -115,11 +115,11 @@ class ConsoleAddon extends TerminalAddon<IConsoleMixin> {
 			return apply;
 		}).bind(inputHandler);
 		
-		let deleteChar = (function(params: any) {
+		let deleteChar = (function(params: any = [0]) {
 			let buffer = this._bufferService.buffer;
 			let x = buffer.x;
 			let y = buffer.y;
-			for (let j=0; j< (params && params[0] || 1); j++) {
+			for (let j=0; j< (params[0] || 1); j++) {
 				this.deleteChars({params:[1]});
 				let line = buffer.lines.get(buffer.ybase+buffer.y);
 				let range = buffer.getWrappedRangeForLine(buffer.y + buffer.ybase)
