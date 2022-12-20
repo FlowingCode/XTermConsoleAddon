@@ -30,10 +30,10 @@ interface IClipboardMixin extends TerminalMixin {
 class ClipboardAddon extends TerminalAddon<IClipboardMixin> {
 	   
     activateCallback(terminal: Terminal): void {
-		let _internalClipboard = undefined;
+		let _internalClipboard : string | undefined = undefined;
 		
 		//function (String) : void
-		let writeText = s => {
+		let writeText = (s: string) => {
 			_internalClipboard = s;
 			if (this.$.useSystemClipboard== 'readwrite' || this.$.useSystemClipboard=='write') {
 				try {
@@ -56,25 +56,30 @@ class ClipboardAddon extends TerminalAddon<IClipboardMixin> {
 			return Promise.resolve(_internalClipboard);
 		}
 		
-		let onEvent = (event, listener) => {
+		let onEvent = (event: string, listener:any) => {
 			terminal.element!.addEventListener(event, listener);
 			return {dispose : () => terminal.element!.removeEventListener(event, listener)};
 		};
 		
+		let paste = (text: string | undefined) => {
+			if (text!==undefined) {
+				terminal.paste(text);
+			}
+		};
 		
 		let initializer = ()=>{
 			//paste with right click
-			this._disposables.push(onEvent('contextmenu', ev => {
+			this._disposables.push(onEvent('contextmenu', (ev:any) => {
 				if (this.$.pasteWithRightClick && !terminal.options.rightClickSelectsWord) {
 					ev.preventDefault();
-					if (_internalClipboard!==undefined) readText().then(text=>terminal.paste(text));
+					if (_internalClipboard!==undefined) readText().then(paste);
 				}
 			})); 
 			
 			//paste with middle click
-			this._disposables.push(onEvent('auxclick', ev => {
+			this._disposables.push(onEvent('auxclick', (ev:any) => {
 					if (this.$.pasteWithMiddleClick && ev.button == 1) {
-						if (_internalClipboard!==undefined) readText().then(text=>terminal.paste(text));
+						if (_internalClipboard!==undefined) readText().then(paste);
 					}
 			}));
 		};
