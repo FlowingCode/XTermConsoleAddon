@@ -18,7 +18,7 @@
  * #L%
  */
 import { Terminal } from 'xterm'
-import { TerminalMixin, TerminalAddon} from '@vaadin/flow-frontend/fc-xterm/xterm-element';
+import { TerminalMixin, TerminalAddon} from './xterm-element';
 
 interface IClipboardMixin extends TerminalMixin {
 	useSystemClipboard: String;

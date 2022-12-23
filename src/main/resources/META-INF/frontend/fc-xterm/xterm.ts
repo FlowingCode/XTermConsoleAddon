@@ -19,12 +19,12 @@
  */
 import { customElement } from 'lit-element';
 
-import { XTermElement } from '@vaadin/flow-frontend/fc-xterm/xterm-element';
-import { XTermClipboardMixin } from '@vaadin/flow-frontend/fc-xterm/xterm-clipboard-mixin';
-import { XTermConsoleMixin } from '@vaadin/flow-frontend/fc-xterm/xterm-console-mixin';
-import { XTermFitMixin } from '@vaadin/flow-frontend/fc-xterm/xterm-fit-mixin';
-import { XTermInsertFixMixin } from '@vaadin/flow-frontend/fc-xterm/xterm-insertfix-mixin';
-import { XTermSelectionMixin } from '@vaadin/flow-frontend/fc-xterm/xterm-selection-mixin';
+import { XTermElement } from './xterm-element';
+import { XTermClipboardMixin } from './xterm-clipboard-mixin';
+import { XTermConsoleMixin } from './xterm-console-mixin';
+import { XTermFitMixin } from './xterm-fit-mixin';
+import { XTermInsertFixMixin } from './xterm-insertfix-mixin';
+import { XTermSelectionMixin } from './xterm-selection-mixin';
 
 @customElement('fc-xterm')
 export class XTermComponent extends XTermInsertFixMixin(XTermClipboardMixin(XTermConsoleMixin(XTermSelectionMixin(XTermFitMixin(XTermElement))))) {
