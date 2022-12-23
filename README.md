@@ -117,3 +117,14 @@ To do so, just add ```com.flowingcode``` to the ```vaadin.whitelisted-packages``
 ```vaadin.whitelisted-packages = com.vaadin,org.vaadin,dev.hilla,com.flowingcode```
  
 More information on Spring whitelisted configuration [here](https://vaadin.com/docs/latest/integrations/spring/configuration/#configure-the-scanning-of-packages).
+
+## Special configuration for Vaadin 23.3 and Vaadin 24
+
+Vaadin 23.3 and 24 validate addons sources as part of the build (see vaadin/flow#15485). 
+In order to exclude the code in the addons from validation, you need to add the following to tsconfig.json:
+
+```
+  "exclude": [
+	"frontend/generated/jar-resources"
+  ]
+```
