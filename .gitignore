@@ -10,7 +10,6 @@ package.json
 webpack.config.js
 /error-screenshots
 drivers
-tsconfig.json
 .idea
 types.d.ts
 /frontend/generated
