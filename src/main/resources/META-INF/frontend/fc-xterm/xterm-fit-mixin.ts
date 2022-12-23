@@ -18,7 +18,7 @@
  * #L%
  */
 import { Terminal, IDisposable } from 'xterm'
-import { TerminalMixin } from '@vaadin/flow-frontend/fc-xterm/xterm-element';
+import { TerminalMixin } from './xterm-element';
 import { FitAddon as FitAddonBase } from 'xterm-addon-fit/src/FitAddon';
 
 
