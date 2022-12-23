@@ -18,8 +18,8 @@
  * #L%
  */
 import { Terminal } from 'xterm'
-import { TerminalMixin, TerminalAddon } from '@vaadin/flow-frontend/fc-xterm/xterm-element';
-import { IConsoleMixin } from '@vaadin/flow-frontend/fc-xterm/xterm-console-mixin';
+import { TerminalMixin, TerminalAddon } from './xterm-element';
+import { IConsoleMixin } from './xterm-console-mixin';
 
 interface ISelectionMixin extends TerminalMixin {
 	keyboardSelectionEnabled: boolean;
