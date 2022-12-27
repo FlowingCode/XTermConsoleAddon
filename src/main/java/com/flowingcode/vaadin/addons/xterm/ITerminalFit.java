@@ -22,7 +22,7 @@ package com.flowingcode.vaadin.addons.xterm;
 import com.vaadin.flow.component.HasElement;
 import com.vaadin.flow.component.dependency.NpmPackage;
 
-@NpmPackage(value = "xterm-addon-fit", version = "0.5.0")
+@NpmPackage(value = "xterm-addon-fit", version = "0.7.0")
 public interface ITerminalFit extends HasElement {
 
   default void fit() {
