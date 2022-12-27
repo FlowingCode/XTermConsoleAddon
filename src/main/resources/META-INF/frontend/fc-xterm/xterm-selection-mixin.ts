@@ -97,12 +97,12 @@ class SelectionAddon extends TerminalAddon<ISelectionMixin> {
 			let buffer = (terminal.buffer.active as any)._buffer;
 			let range = buffer.getWrappedRangeForLine(buffer.ybase+buffer.y);
 			
-			let pos = terminal.getSelectionPosition() || {startRow: buffer.ybase+buffer.y, startColumn: buffer.x};
+			let pos = terminal.getSelectionPosition() || {start: {y: buffer.ybase+buffer.y, x: buffer.x}};
 			
 			resetSelection();
 			ensureSelection();
 			let dx = range.first * terminal.cols - this.__selectionAnchor!;
-			if (pos.startRow != range.first || pos.startColumn != promptLength()) {
+			if (pos.start.y != range.first || pos.start.x != promptLength()) {
 				dx+= promptLength();
 			}
 			
@@ -126,8 +126,7 @@ class SelectionAddon extends TerminalAddon<ISelectionMixin> {
 				let buffer = (terminal.buffer.active as any)._buffer;
 				let range = buffer.getWrappedRangeForLine(buffer.ybase+buffer.y);				
 				let pos = terminal.getSelectionPosition();					
-				if (pos && pos.startRow>=range.first && pos.endRow<=range.last) {
-					//let selectionStart = pos.startRow * terminal.cols + pos.startColumn;
+				if (pos && pos.start.y>=range.first && pos.end.y<=range.last) {
 					if (!this.__selectionRight) {
 						//cursor backward wrapped
 						terminal.write("\x1b[<" + this.__selectionLength + "L");
