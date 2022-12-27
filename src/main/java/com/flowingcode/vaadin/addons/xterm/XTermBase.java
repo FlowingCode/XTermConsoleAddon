@@ -57,7 +57,7 @@ import lombok.experimental.Delegate;
 
 /** Server-side component for the XTerm component. */
 @SuppressWarnings("serial")
-@NpmPackage(value = "xterm", version = "4.19.0")
+@NpmPackage(value = "xterm", version = "5.1.0")
 @JsModule("./fc-xterm/xterm-element.ts")
 @CssImport("xterm/css/xterm.css")
 public abstract class XTermBase extends Component
