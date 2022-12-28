@@ -43,6 +43,7 @@ class InsertFixAddon extends TerminalAddon<TerminalMixin> {
 			const printedLength = end-start;
 			let  trimmedLength = bufferRow.getTrimmedLength();
 			
+			//If the inserted characters would overflow the current liner
 			if (buffer.x!=trimmedLength && trimmedLength+printedLength > bufferRow.length) {
 				let range = buffer.getWrappedRangeForLine(buffer.y + buffer.ybase)
 				range.first = buffer.y + buffer.ybase;
@@ -54,7 +55,10 @@ class InsertFixAddon extends TerminalAddon<TerminalMixin> {
 					src = buffer.lines.get(range.last);
 					trimmedLength = src.getTrimmedLength();
 				}
+				
+				//If the inserted characters would overflow the last line in wrapped range
 				if (trimmedLength+printedLength > src.length) {
+					//Then wrap the next row
 					if (range.last == buffer._rows - 1) {
 						inputHandler._bufferService.scroll(inputHandler._eraseAttrData(), true);
 					}
@@ -64,6 +68,8 @@ class InsertFixAddon extends TerminalAddon<TerminalMixin> {
 					inputHandler._dirtyRowService.markDirty(buffer.y+1);
 				}
 				
+				//Allocate space for the characters to be inserted
+				//Wrap-move characters in page memory to the next line
 				for (let y=range.last;y>range.first;y--) {
 					let dst = src;
 					src= buffer.lines.get(y-1);
