@@ -19,7 +19,7 @@
  */
 import { LitElement, html, TemplateResult } from 'lit-element';
 
-import { Terminal, ITerminalAddon, IDisposable } from 'xterm'
+import { Terminal, ITerminalAddon, IDisposable } from 'xterm';
 import { ITerminal } from 'xterm/src/browser/Types';
 
 type integer = number;
