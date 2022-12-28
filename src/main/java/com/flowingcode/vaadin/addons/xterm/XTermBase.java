@@ -124,7 +124,11 @@ public abstract class XTermBase extends Component
         } else {
           arg = (Serializable) args[0];
         }
-        return executeJs(false, "this.terminal.options[$0]=$1", name, arg);
+        if (name.equals("bellStyle") || name.equals("bellSound")) {
+          return executeJs(false, "this[$0]=$1", name, arg);
+        } else {
+          return executeJs(false, "this.terminal.options[$0]=$1", name, arg);
+        }
       } else if (args == null || args.length == 0) {
         return executeJs(hasResult, "return this.terminal[$0]()", name);
       } else if (args.length == 1) {
