@@ -65,7 +65,7 @@ class InsertFixAddon extends TerminalAddon<TerminalMixin> {
 					const dst = buffer.lines.get(range.last+1);
 					dst.isWrapped = true;
 					dst.copyCellsFrom(src, trimmedLength-printedLength, 0, printedLength);
-					inputHandler._dirtyRowService.markDirty(buffer.y+1);
+					inputHandler._dirtyRowTracker.markDirty(buffer.y+1);
 				}
 				
 				//Allocate space for the characters to be inserted
@@ -75,7 +75,7 @@ class InsertFixAddon extends TerminalAddon<TerminalMixin> {
 					src= buffer.lines.get(y-1);
 					dst.insertCells(0, printedLength, buffer.getNullCell(inputHandler._eraseAttrData()));
 					dst.copyCellsFrom(src, buffer._cols-printedLength, 0, printedLength);
-					inputHandler._dirtyRowService.markDirty(y);
+					inputHandler._dirtyRowTracker.markDirty(y);
 				}				
 			}
 		}
