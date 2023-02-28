@@ -161,6 +161,11 @@ export class XTermElement extends LitElement implements TerminalMixin {
     this.bellStyle = 'none';
   }
 
+  _onData(e:string) : void {
+    //<N CSI is handled by console-feature
+    this.terminal.write(e.replace(/\r/g,'\x1b[<N\n'));
+  }
+  
   connectedCallback() {
     super.connectedCallback();
 
@@ -168,10 +173,7 @@ export class XTermElement extends LitElement implements TerminalMixin {
     term.options.convertEol = true;
     
     //onLineFeed doesn't distinguish lines from user input and lines from terminal.write
-    //<N CSI is handled by console-feature
-    term.onData(e => {
-        term.write(e.replace(/\r/g,'\x1b[<N\n'));
-    });
+    term.onData(e=>this._onData(e));
     
     term.onBell(() => {
       if (this.bellStyle == 'sound') {
