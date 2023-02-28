@@ -43,11 +43,13 @@ interface CustomKeyEventHandler {
 
 interface CustomKeyEventHandlerRegistryDisposable extends IDisposable {
   id: integer;    
+  unshift: () => void;
 }
 
 //sparse array of CustomKeyEventHandler
 class CustomKeyEventHandlerRegistry {
   private handlers: CustomKeyEventHandler[] = [];
+  private indexes: number[] = [];
   private next:integer=0;
 
   register(customKey: CustomKey, handle?: (event: KeyboardEvent) => void): CustomKeyEventHandlerRegistryDisposable;
@@ -67,15 +69,36 @@ class CustomKeyEventHandlerRegistry {
     const id = this.next++;
     if (!handle) handle = () => {};
     this.handlers[id] = {predicate, handle};
-    return {id, dispose : () => delete this.handlers[id]};            
+    this.indexes.push(id);
+    return {id, dispose : () => this.remove(id), unshift : () => this.unshift(id)};
   }
 
+  private unshift(id: integer) : void {
+    const i= this.indexes.indexOf(id);
+    if (i>=0) {
+      this.indexes.splice(i, 1);
+      this.indexes.unshift(id);
+    }
+  }
+  
   remove(id: integer) : void {
     delete this.handlers[id];
+    const i= this.indexes.indexOf(id);
+    if (i>=0) this.indexes.splice(i, 1);
   }
 
   handle(context: XTermElement, ev: KeyboardEvent) : boolean {
     //invoke all the applicable handlers for event
+
+    let listeners : CustomKeyEventHandler[] = [];
+    
+    for(var i=0;i<this.indexes.length;i++) {
+      const h = this.handlers[this.indexes[i]];
+      if (h.predicate(ev)) {
+        listeners.push(h);
+      }
+    }
+
 	let stopImmediatePropagation = ev.stopImmediatePropagation.bind(ev);
 
 	let immediatePropagationStopped = false;
@@ -84,13 +107,10 @@ class CustomKeyEventHandlerRegistry {
 		immediatePropagationStopped=true;
 	};
 	
-	let handled = false;
-    for(const i in this.handlers) {
-      if (/\d+/.test(i) && this.handlers[i].predicate(ev)) {
-		handled=true;
-		this.handlers[i].handle?.call(context, ev);
+	let handled = listeners.length>0;
+	for (var i=0;i<listeners.length;i++) {
+		listeners[i].handle?.call(context, ev);
 		if (immediatePropagationStopped) break;
-	  }
 	}
 	
 	if ((ev as any).requestCustomEvent) {
