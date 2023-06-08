@@ -78,7 +78,7 @@ Then, follow these steps for creating a contibution:
 
 ## License & Author
 
-Add-on is distributed under Apache License 2.0. For license terms, see LICENSE.txt.
+This add-on is distributed under Apache License 2.0. For license terms, see LICENSE.txt.
 
 XTermConsoleAddon is written by Flowing Code S.A.
 
