@@ -83,6 +83,7 @@
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-core</artifactId>
+            <optional>true</optional>
         </dependency>
         
         <dependency>
