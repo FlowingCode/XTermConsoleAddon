@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-import { customElement } from 'lit-element';
+import {customElement} from 'lit/decorators/custom-element.js';
 
 import { XTermElement } from './xterm-element';
 import { XTermClipboardMixin } from './xterm-clipboard-mixin';
