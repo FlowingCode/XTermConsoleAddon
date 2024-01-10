@@ -20,3 +20,4 @@ vite.generated.ts
 /.pnpm-debug.log
 /pnpm-lock.yaml
 /pnpmfile.js
+/src/main/bundles
