@@ -9,7 +9,7 @@
     <description>Integration of xterm.js for Vaadin Flow</description>
 
     <properties>
-        <vaadin.version>24.3.2</vaadin.version>
+        <vaadin.version>24.3.5</vaadin.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>		
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -76,7 +76,7 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<scope>provided</scope>
-			<version>1.18.24</version>
+			<version>1.18.30</version>
 		</dependency>
 		
         <dependency>
