@@ -1,0 +1,5 @@
+[
+  {
+    "interfaces":["com.flowingcode.vaadin.addons.xterm.ITerminal","com.flowingcode.vaadin.addons.xterm.ITerminalOptions"]
+  }
+]
