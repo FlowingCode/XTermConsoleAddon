@@ -1,0 +1,16 @@
+[
+{
+  "name":"com.flowingcode.vaadin.addons.xterm.ITerminal",
+  "queryAllDeclaredMethods":true,
+  "allPublicMethods": true
+},
+{
+  "name":"com.flowingcode.vaadin.addons.xterm.ITerminalOptions",
+  "queryAllDeclaredMethods":true,
+  "allPublicMethods": true
+},
+{
+  "name":"com.flowingcode.vaadin.addons.xterm.TerminalTheme",
+  "allDeclaredFields": true
+}
+]
