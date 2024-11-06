@@ -109,7 +109,6 @@ public interface ITerminal extends Serializable {
    * @param data The data to write to the terminal. This can either be raw bytes given as Uint8Array
    *     from the pty or a string. Raw bytes will always be treated as UTF-8 encoded, string data as
    *     UTF-16.
-   * @param callback Optional callback that fires when the data was processed by the parser.
    */
   void writeln(String data);
 
