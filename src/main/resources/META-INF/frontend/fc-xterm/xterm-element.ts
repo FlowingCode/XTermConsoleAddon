@@ -161,6 +161,8 @@ export class XTermElement extends LitElement implements TerminalMixin {
   bellStyle: 'none' | 'sound'
   
   customKeyEventHandlers: CustomKeyEventHandlerRegistry;
+  
+  addons : Object = {};
 
   render(): TemplateResult {
     return html`
