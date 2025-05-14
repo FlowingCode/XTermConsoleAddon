@@ -2,7 +2,7 @@
  * #%L
  * XTerm Console Addon
  * %%
- * Copyright (C) 2020 - 2023 Flowing Code
+ * Copyright (C) 2020 - 2025 Flowing Code
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,9 @@ import java.util.concurrent.CompletableFuture;
  * addon.writePrompt();
  * </pre>
  */
-public class PreserveStateAddon implements ITerminal, ITerminalOptions {
+public class PreserveStateAddon extends TerminalAddon
+    implements ITerminal, ITerminalOptions {
+
     /**
      * The xterm to delegate all calls to.
      */
@@ -80,6 +82,7 @@ public class PreserveStateAddon implements ITerminal, ITerminalOptions {
     private final ITerminalOptions optionsDelegate;
 
     public PreserveStateAddon(XTerm xterm) {
+        super(xterm);
         this.xterm = Objects.requireNonNull(xterm);
         optionsMemoizer = new StateMemoizer(xterm, ITerminalOptions.class);
         optionsDelegate = (ITerminalOptions) optionsMemoizer.getProxy();

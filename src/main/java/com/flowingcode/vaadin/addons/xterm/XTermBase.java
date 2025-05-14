@@ -2,7 +2,7 @@
  * #%L
  * XTerm Console Addon
  * %%
- * Copyright (C) 2020 - 2023 Flowing Code
+ * Copyright (C) 2020 - 2025 Flowing Code
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,6 +43,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -68,6 +69,8 @@ public abstract class XTermBase extends Component
   @Delegate private ITerminal terminalProxy;
 
   private List<Command> deferredCommands;
+
+  private final List<TerminalAddon> addons = new ArrayList<>();
 
   private class ProxyInvocationHandler implements InvocationHandler, Serializable {
 
@@ -281,4 +284,46 @@ public abstract class XTermBase extends Component
   public void setEnabled(boolean enabled) {
     HasEnabled.super.setEnabled(enabled);
   }
+
+  /**
+   * Retrieves a registered server-side add-on instance of a specific type.
+   * <p>
+   * Example usage:
+   * </p>
+   *
+   * <pre>{@code
+   * MySpecificAddon addon = terminal.getAddon(MySpecificAddon.class);
+   * if (addon != null) {
+   *   addon.doSomethingSpecific();
+   * }
+   * }</pre>
+   *
+   * @param <T> the type of the add-on to retrieve. This is inferred from the {@code clazz}
+   *        parameter.
+   * @param clazz the {@code Class} object representing the type of the add-on to retrieve. Must not
+   *        be {@code null}.
+   * @return the registered add-on instance that is of the specified {@code Class<T>}, or
+   *         {@code null} if no such add-on is found
+   * @throws NullPointerException if {@code clazz} is {@code null}
+   */
+  public <T extends TerminalAddon> T getAddon(Class<? extends T> clazz) {
+    return addons.stream().filter(clazz::isInstance).map(clazz::cast).findFirst().orElse(null);
+  }
+
+  /**
+   * Registers a server-side add-on with this terminal instance. This method is called by the add-on
+   * itself during its construction.
+   *
+   * @param addon the add-on to register. Must not be {@code null}.
+   * @throws NullPointerException if {@code addon} is {@code null}
+   * @throws IllegalStateException if an add-on of the same class as the provided {@code addon} is
+   *         already registered with this terminal instance
+   */
+  final <T extends TerminalAddon> void registerServerSideAddon(T addon) {
+    if (getAddon(addon.getClass()) != null) {
+      throw new IllegalStateException("Addon already registered: " + addon.getClass().getName());
+    }
+    addons.add(addon);
+  }
+
 }
