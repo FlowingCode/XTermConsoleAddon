@@ -4,7 +4,7 @@
 
     <groupId>com.flowingcode.addons</groupId>
     <artifactId>xterm-console</artifactId>
-    <version>3.2.0-SNAPSHOT</version>
+    <version>3.2.0</version>
     <name>XTerm Console Addon</name>
     <description>Integration of xterm.js for Vaadin Flow</description>
 
@@ -35,7 +35,7 @@
         <url>https://github.com/FlowingCode/XTermConsoleAddon</url>
         <connection>scm:git:git://github.com/FlowingCode/XTermConsoleAddon.git</connection>
         <developerConnection>scm:git:ssh://git@github.com:/FlowingCode/XTermConsoleAddon.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>xterm-console-3.2.0</tag>
     </scm>
 
     <developers>
