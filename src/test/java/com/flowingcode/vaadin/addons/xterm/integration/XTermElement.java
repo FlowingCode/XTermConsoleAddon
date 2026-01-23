@@ -2,7 +2,7 @@
  * #%L
  * XTerm Console Addon
  * %%
- * Copyright (C) 2020 - 2023 Flowing Code
+ * Copyright (C) 2020 - 2026 Flowing Code
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -86,6 +86,11 @@ public class XTermElement extends TestBenchElement {
   @Override
   public void sendKeys(CharSequence... keysToSend) {
     input.sendKeys(keysToSend);
+    // Wait for terminal to process writes by using a write callback
+    getCommandExecutor().getDriver().executeAsyncScript("""
+            var callback = arguments[arguments.length - 1];
+            arguments[0].terminal.write('', callback);
+        """, this);
   }
 
   @Override
