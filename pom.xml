@@ -126,7 +126,7 @@
 		<dependency>
 			<groupId>com.flowingcode.vaadin.addons.demo</groupId>
 			<artifactId>commons-demo</artifactId>
-			<version>4.0.0</version>
+			<version>5.1.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -503,16 +503,7 @@
                    <id>vaadin-prerelease</id>
                    <url>https://maven.vaadin.com/vaadin-prereleases</url>
                </pluginRepository>
-           </pluginRepositories> 
-           
-           <dependencies>
-               <dependency>
-                   <groupId>com.flowingcode.vaadin.addons.demo</groupId>
-                   <artifactId>commons-demo</artifactId>
-                   <version>4.4.0-SNAPSHOT</version>
-                   <scope>test</scope>
-               </dependency>
-           </dependencies>
+           </pluginRepositories>
        </profile>
 
     </profiles>
