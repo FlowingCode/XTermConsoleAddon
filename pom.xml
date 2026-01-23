@@ -483,10 +483,6 @@
            </properties>
            <repositories>
                <repository>
-                   <id>vaadin-prerelease</id>
-                   <url>https://maven.vaadin.com/vaadin-prereleases</url>
-               </repository>
-               <repository>
                    <id>FlowingCode Snapshots</id>
                    <url>https://maven.flowingcode.com/snapshots</url>
                    <snapshots>
@@ -497,13 +493,6 @@
                    </releases>
                </repository>
            </repositories>
-            
-           <pluginRepositories>
-               <pluginRepository>
-                   <id>vaadin-prerelease</id>
-                   <url>https://maven.vaadin.com/vaadin-prereleases</url>
-               </pluginRepository>
-           </pluginRepositories>
        </profile>
 
     </profiles>
