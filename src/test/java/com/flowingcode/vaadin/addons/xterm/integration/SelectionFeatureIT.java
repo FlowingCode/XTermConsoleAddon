@@ -2,7 +2,7 @@
  * #%L
  * XTerm Console Addon
  * %%
- * Copyright (C) 2020 - 2023 Flowing Code
+ * Copyright (C) 2020 - 2026 Flowing Code
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,12 +29,11 @@ import org.openqa.selenium.Keys;
 public class SelectionFeatureIT extends AbstractViewTest {
 
   @Test
-  public void testSelectionFeature() throws InterruptedException {
+  public void testSelectionFeature1() throws InterruptedException {
     XTermElement term = $(XTermElement.class).first();
-    Position pos;
 
     term.write("abcd");
-    pos = term.cursorPosition();
+    Position pos = term.cursorPosition();
 
     // select left, backspace
     term.sendKeys(Keys.SHIFT, Keys.ARROW_LEFT);
@@ -69,9 +68,14 @@ public class SelectionFeatureIT extends AbstractViewTest {
     term.sendKeys(Keys.BACK_SPACE);
     assertThat(term.currentLine(), isEmptyString());
     assertThat(term.cursorPosition(), is(pos));
+  }
+
+  @Test
+  public void testSelectionFeature2() throws InterruptedException {
+    XTermElement term = $(XTermElement.class).first();
 
     term.write("abcd");
-    pos = term.cursorPosition();
+    Position pos = term.cursorPosition();
 
     // select to home, delete
     term.sendKeys(Keys.SHIFT, Keys.HOME);
@@ -80,9 +84,16 @@ public class SelectionFeatureIT extends AbstractViewTest {
     term.sendKeys(Keys.DELETE);
     assertThat(term.currentLine(), isEmptyString());
     assertThat(term.cursorPosition(), is(pos.advance(-4, 0)));
+  }
+
+  @Test
+  public void testSelectionFeature3() throws InterruptedException {
+    XTermElement term = $(XTermElement.class).first();
+
+    term.write("abcd");
+    Position pos = term.cursorPosition();
 
     // select to end, delete
-    term.write("abcd");
     term.sendKeys(Keys.HOME);
     pos = term.cursorPosition();
     term.sendKeys(Keys.SHIFT, Keys.END);
@@ -91,7 +102,11 @@ public class SelectionFeatureIT extends AbstractViewTest {
     term.sendKeys(Keys.DELETE);
     assertThat(term.currentLine(), isEmptyString());
     assertThat(term.cursorPosition(), is(pos));
+  }
 
+  @Test
+  public void testSelectionFeature4() throws InterruptedException {
+    XTermElement term = $(XTermElement.class).first();
     String text = makeFullLine(term, true) + makeFullLine(term, false) + makeFullLine(term, false);
 
     // select to home, delete (wrapping)
@@ -101,7 +116,12 @@ public class SelectionFeatureIT extends AbstractViewTest {
     assertThat(term.getSelection(), is(text));
     term.sendKeys(Keys.DELETE);
     assertThat(term.currentLine(), isEmptyString());
+  }
 
+  @Test
+  public void testSelectionFeature5() throws InterruptedException {
+    XTermElement term = $(XTermElement.class).first();
+    String text = makeFullLine(term, true) + makeFullLine(term, false) + makeFullLine(term, false);
     // select to end, delete (wrapping)
     term.write(text);
     assertThat(term.currentLine(), is(text));
@@ -110,7 +130,6 @@ public class SelectionFeatureIT extends AbstractViewTest {
     assertThat(term.getSelection(), is(text));
     term.sendKeys(Keys.DELETE);
     assertThat(term.currentLine(), isEmptyString());
-
   }
 
 }
