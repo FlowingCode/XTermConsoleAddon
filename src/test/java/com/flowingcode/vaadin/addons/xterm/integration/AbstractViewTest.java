@@ -2,7 +2,7 @@
  * #%L
  * XTerm Console Addon
  * %%
- * Copyright (C) 2020 - 2023 Flowing Code
+ * Copyright (C) 2020 - 2026 Flowing Code
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,6 +70,7 @@ public abstract class AbstractViewTest extends ParallelTest {
       setDriver(TestBench.createDriver(new ChromeDriver()));
     }
     getDriver().get(getURL(route));
+    getCommandExecutor().waitForVaadin();
   }
 
   /**
