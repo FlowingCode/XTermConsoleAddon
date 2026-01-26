@@ -19,6 +19,7 @@
  */
 package com.flowingcode.vaadin.addons.xterm;
 
+import com.flowingcode.vaadin.jsonmigration.JsonMigration;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.component.HasSize;
@@ -55,12 +56,14 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.experimental.Delegate;
+import lombok.experimental.ExtensionMethod;
 
 /** Server-side component for the XTerm component. */
 @SuppressWarnings("serial")
 @NpmPackage(value = "xterm", version = "5.1.0")
 @JsModule("./fc-xterm/xterm-element.ts")
 @CssImport("xterm/css/xterm.css")
+@ExtensionMethod(value = JsonMigration.class, suppressBaseMethods = true)
 public abstract class XTermBase extends Component
     implements ITerminal, ITerminalOptions, HasSize, HasEnabled {
 
