@@ -19,7 +19,9 @@
  */
 package com.flowingcode.vaadin.addons.xterm.integration;
 
+import com.flowingcode.vaadin.addons.xterm.ITerminalClipboard.UseSystemClipboard;
 import com.flowingcode.vaadin.addons.xterm.ITerminalOptions.CursorStyle;
+import com.flowingcode.vaadin.addons.xterm.TerminalHistory;
 import com.flowingcode.vaadin.addons.xterm.XTerm;
 import com.vaadin.flow.component.ClientCallable;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -50,8 +52,14 @@ public class IntegrationView extends VerticalLayout implements IntegrationViewCa
     xterm.setCursorStyle(CursorStyle.UNDERLINE);
 
     xterm.setSizeFull();
-    sampleClientTerminalAddon = new SampleClientTerminalAddon(xterm);
 
+    xterm.setCopySelection(true);
+    xterm.setUseSystemClipboard(UseSystemClipboard.READWRITE);
+    xterm.setPasteWithMiddleClick(true);
+    xterm.setPasteWithRightClick(true);
+
+    sampleClientTerminalAddon = new SampleClientTerminalAddon(xterm);
+    TerminalHistory.extend(xterm);
     xterm.addLineListener(ev -> xterm.writePrompt());
 
     xterm.focus();
