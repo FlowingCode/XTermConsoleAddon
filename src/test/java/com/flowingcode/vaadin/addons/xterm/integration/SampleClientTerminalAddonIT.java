@@ -28,10 +28,6 @@ public class SampleClientTerminalAddonIT extends AbstractViewTest implements Has
   private static final String BAR = "BAR";
   IntegrationViewCallables $server = createCallableProxy(IntegrationViewCallables.class);
 
-  public SampleClientTerminalAddonIT() {
-    super(IntegrationView.ROUTE);
-  }
-
   @Test
   public void testSelectionFeature1() throws InterruptedException {
     XTermElement term = $(XTermElement.class).first();

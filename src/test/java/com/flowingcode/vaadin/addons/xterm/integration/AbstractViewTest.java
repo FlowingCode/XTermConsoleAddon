@@ -49,7 +49,7 @@ public abstract class AbstractViewTest extends ParallelTest {
   @Rule public ScreenshotOnFailureRule rule = new ScreenshotOnFailureRule(this, true);
 
   public AbstractViewTest() {
-    this("");
+    this(IntegrationView.ROUTE);
   }
 
   protected AbstractViewTest(String route) {
