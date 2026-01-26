@@ -102,6 +102,12 @@
             <artifactId>vaadin-testbench</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.flowingcode.vaadin.test</groupId>
+            <artifactId>testbench-rpc</artifactId>
+            <version>1.4.0</version>
+            <scope>test</scope>
+        </dependency>
 		<dependency>
 		    <groupId>org.hamcrest</groupId>
 		    <artifactId>hamcrest-library</artifactId>
