@@ -2,7 +2,7 @@
  * #%L
  * XTerm Console Addon
  * %%
- * Copyright (C) 2020 - 2025 Flowing Code
+ * Copyright (C) 2020 - 2026 Flowing Code
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,17 @@
  */
 package com.flowingcode.vaadin.addons.xterm;
 
+import com.flowingcode.vaadin.jsonmigration.JsonMigration;
 import com.vaadin.flow.dom.Element;
-import com.vaadin.flow.internal.JsonCodec;
+import com.vaadin.flow.server.Version;
 import elemental.json.Json;
 import elemental.json.JsonArray;
+import elemental.json.JsonValue;
 import java.io.Serializable;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+import lombok.SneakyThrows;
 
 /**
  * Represents an abstract base class for server-side terminal add-ons that have a corresponding
@@ -96,11 +102,39 @@ public abstract class ClientTerminalAddon extends TerminalAddon {
 
     JsonArray args = Json.createArray();
     for (int i = 0; i < parameters.length; i++) {
-      args.set(i, JsonCodec.encodeWithTypeInfo(parameters[i]));
+      args.set(i, encodeWithTypeInfo(parameters[i]));
     }
 
     expression = expression.replaceAll("\\$(\\d+)", "\\$1[$1]");
     xterm.executeJs("(function(){" + expression + "}).apply(this.addons[$0],$1);", name, args);
+  }
+
+  private static final MethodHandle encodeWithTypeInfo = lookup_encodeWithTypeInfo();
+
+  @SneakyThrows
+  private static MethodHandle lookup_encodeWithTypeInfo() {
+    MethodHandle handle;
+    if (Version.getMajorVersion() > 24) {
+      Class<?> result = Class.forName("tools.jackson.databind.JsonNode");
+      Class<?> codec = Class.forName("com.vaadin.flow.internal.JacksonCodec");
+      MethodType type = MethodType.methodType(result, Object.class);
+      handle = MethodHandles.lookup().findStatic(codec, "encodeWithTypeInfo", type);
+    } else {
+      Class<?> codec = Class.forName("com.vaadin.flow.internal.JsonCodec");
+      MethodType type = MethodType.methodType(JsonValue.class, Object.class);
+      handle = MethodHandles.lookup().findStatic(codec, "encodeWithTypeInfo", type);
+    }
+    return handle.asType(MethodType.methodType(Object.class, Object.class));
+  }
+
+  private static JsonValue encodeWithTypeInfo(Object obj) {
+    try {
+      return JsonMigration.convertToJsonValue(encodeWithTypeInfo.invokeExact(obj));
+    } catch (RuntimeException | Error e) {
+      throw e;
+    } catch (Throwable e) {
+      throw new RuntimeException(e);
+    }
   }
 
 }

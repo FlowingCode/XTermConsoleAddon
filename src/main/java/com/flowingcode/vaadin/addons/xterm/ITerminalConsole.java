@@ -2,7 +2,7 @@
  * #%L
  * XTerm Console Addon
  * %%
- * Copyright (C) 2020 - 2023 Flowing Code
+ * Copyright (C) 2020 - 2026 Flowing Code
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@
  */
 package com.flowingcode.vaadin.addons.xterm;
 
+import com.flowingcode.vaadin.jsonmigration.JsonMigration;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -30,12 +31,14 @@ import com.vaadin.flow.shared.Registration;
 import elemental.json.JsonValue;
 import java.util.concurrent.CompletableFuture;
 import lombok.Getter;
+import lombok.experimental.ExtensionMethod;
 
 /**
  * Add console support to XTerm. This provides handling of cursor, home/end, insert, delete and
  * backspace keys, as well as a {@link #addLineListener(ComponentEventListener) line event}.
  */
 @SuppressWarnings("serial")
+@ExtensionMethod(value = JsonMigration.class, suppressBaseMethods = true)
 public interface ITerminalConsole extends HasElement {
 
   // TODO set cursor properties (blink, style, width) separately for insert and overwrite modes
