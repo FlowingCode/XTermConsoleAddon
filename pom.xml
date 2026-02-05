@@ -16,6 +16,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<drivers.dir>${project.basedir}/drivers</drivers.dir>
         <jetty.version>11.0.26</jetty.version>
+        <flowingcode.commons.demo.version>5.1.0</flowingcode.commons.demo.version>
     </properties>
 	
     <organization>
@@ -124,7 +125,7 @@
 		<dependency>
 			<groupId>com.flowingcode.vaadin.addons.demo</groupId>
 			<artifactId>commons-demo</artifactId>
-			<version>5.1.0</version>
+			<version>${flowingcode.commons.demo.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
