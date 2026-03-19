@@ -16,6 +16,14 @@ Vaadin 14+ Java integration of [xterm.js](https://xtermjs.org/) terminal emulato
 * ANSI escape sequences
 * And much more...
 
+## Supported versions
+
+| Vaadin Version | Add-on Version |
+|---|---|
+| 24-25 | 3.x |
+| 23 | 2.x |
+| 14 | 1.x |
+
 ## Online demo
 
 * [Vaadin 14](http://addonsv14.flowingcode.com/xterm) (Add-on version 1.x)
