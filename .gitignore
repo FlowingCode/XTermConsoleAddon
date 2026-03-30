@@ -21,3 +21,4 @@ vite.generated.ts
 /pnpm-lock.yaml
 /pnpmfile.js
 /src/main/bundles
+/.claude/settings.local.json
