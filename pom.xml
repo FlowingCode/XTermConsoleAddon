@@ -100,11 +100,13 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <?dev-only?>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-testbench</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
+            <?dev-only?>
             <groupId>com.flowingcode.vaadin.test</groupId>
             <artifactId>testbench-rpc</artifactId>
             <version>1.5.0</version>
@@ -176,6 +178,19 @@
 		</pluginManagement>
 		
         <plugins>
+			<plugin>
+				<?dev-only?>
+				<groupId>com.flowingcode.maven</groupId>
+				<artifactId>dev-nuke-maven-plugin</artifactId>
+				<version>1.0.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>dev-nuke</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			 	 	
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
